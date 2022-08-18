@@ -1,0 +1,196 @@
+<div class="content">
+  <div class="title mb-3">
+    <mb-table-title [title]="'model.notification.listTitle'"></mb-table-title>
+  </div>
+  <nz-table class="content mt-3">
+    <div class="filter-element" [formGroup]="formSearchNoti">
+      <div class="row p-4">
+        <!-- <div class="col-3">
+          <label>{{ getTranslate("keyword") }}</label>
+          <input
+            type="text"
+            nz-input
+            formControlName="keyword"
+            app-trim
+            (keyup.enter)="this.onSearchForm()"
+            [placeholder]="getTranslate('inputKeyword')"
+          />
+        </div> -->
+        <div class="col-3">
+          <label>{{ "common.sendDate" | translate }}</label>
+          <app-date-range-picker
+            [fromDate]="this.formSearchNoti?.get('startDate')?.value"
+            [toDate]="this.formSearchNoti?.get('endDate')?.value"
+            (rangeDateChange)="this.onChangeDate($event)"
+          >
+          </app-date-range-picker>
+        </div>
+        <div class="col-3">
+          <label>{{ getTranslate("status") }}</label>
+          <nz-select
+            [nzShowArrow]="true"
+            nzShowSearch
+            removeOptionTitle
+            nzAllowClear
+            formControlName="isRead"
+            nzPlaceHolder="{{ getTranslate('status') }}"
+          >
+            <nz-option
+              [nzCustomContent]="true"
+              *ngFor="let status of NOTIFICATION_TYPE_SEEN_STATUS"
+              [nzLabel]="status.label | translate"
+              [nzValue]="status.value"
+            >
+              <div
+                container="body"
+                [animation]="false"
+                [openDelay]="100"
+                [closeDelay]="0"
+                [ngbTooltip]="status.label | translate"
+              >
+                {{ status.label! | translate }}
+              </div>
+            </nz-option>
+          </nz-select>
+        </div>
+      </div>
+      <div class="row mt-2 mb-3 text-center">
+        <div class="col-12">
+          <button
+            class="me-3"
+            nz-button
+            nzType="default"
+            (click)="onClearSearchForm()"
+          >
+            {{ "action.reset" | translate }}
+          </button>
+          <button nz-button nzType="primary" (click)="onSearchForm()">
+            {{ "common.search" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </nz-table>
+  <div class="row mt-3">
+    <div class="col-12">
+      <nz-table
+        #table
+        [nzData]="internals"
+        [nzNoResult]="noDataResult"
+        [nzTableLayout]="'auto'"
+        (nzQueryParams)="onQueryParamsChange($event)"
+      >
+        <thead>
+          <tr>
+            <th nzAlign="center">{{ "common.index" | translate }}</th>
+            <th nzAlign="left">
+              {{ "model.notification.list.title" | translate }}
+            </th>
+            <th nzAlign="center">
+              {{ "model.notification.contentType" | translate }}
+            </th>
+            <th nzAlign="center">
+              {{ "model.notification.list.actualDate" | translate }}
+            </th>
+            <th nzAlign="center">{{ "common.status" | translate }}</th>
+            <th nzAlign="left">{{ "common.sender" | translate }}</th>
+            <th nzAlign="center" [nzWidth]="'180px'">
+              {{ "action.msg" | translate }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of internals; let i = index">
+            <tr>
+              <td nzAlign="center">{{ getIndex(i) }}</td>
+              <td
+                nzAlign="left"
+                [nzTooltipTitle]="item.title"
+                nzTooltipPlacement="top"
+                nz-tooltip
+              >
+                {{ getLimitLength(item.title, 50) }}
+              </td>
+              <td nzAlign="center">{{ item.contentType }}</td>
+              <td nzAlign="center">{{ formatDate(item?.sendAt) }}</td>
+              <td nzAlign="center">
+                <mb-badge
+                  [color]="getColor(item.isRead!)"
+                  [text]="formatStatus(item?.isRead!) | translate"
+                >
+                </mb-badge>
+              </td>
+              <td nzAlign="left">{{ item?.senderUsername || "" }}</td>
+              <td nzAlign="center">
+                <ng-template
+                  [ngIf]="
+                    item.status === NOTIFICATION_STATUS_ALL.DONE_VALUE ||
+                    item.status === NOTIFICATION_STATUS_ALL.IN_PROGRESS_VALUE
+                  "
+                >
+                  <mb-button-action
+                    [action]="'view'"
+                    *hasRoles="['notification:view']"
+                    nzTooltipTitle="{{ 'action.detail' | translate }}"
+                    nzTooltipPlacement="top"
+                    nz-tooltip
+                    (click)="detail(item)"
+                  >
+                  </mb-button-action>
+                </ng-template>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </nz-table>
+      <mb-pagination
+        [pageIndex]="querySearchInternal.pageIndex"
+        [pageSize]="querySearchInternal.pageSize"
+        [total]="querySearchInternal.total"
+        (onChange)="onQuerySearch($event)"
+      >
+      </mb-pagination>
+    </div>
+  </div>
+</div>
+
+<ng-template #searchTemplate>
+  <div class="row mt-3 mb-4">
+    <div class="col-3 d-flex">
+      <mb-button
+        [iconResource]="'filter'"
+        class="mr-2"
+        (click)="filter()"
+      ></mb-button>
+      <nz-input-group [nzPrefix]="suffixIconSearch">
+        <input
+          type="text"
+          nz-input
+          [value]="
+            tabIndex === 0
+              ? querySearchInternal.keyword
+              : querySearchCustomer.keyword
+          "
+          (keyup.enter)="search($event)"
+          [placeholder]="'action.search' | translate"
+        />
+      </nz-input-group>
+      <ng-template #suffixIconSearch>
+        <i nz-icon nzType="search"></i>
+      </ng-template>
+    </div>
+    <div class="col-9 text-right" *hasRoles="['notification:create']">
+      <mb-button
+        [type]="'primary'"
+        [icon]="'plus'"
+        [text]="'action.create'"
+        (click)="create()"
+      >
+      </mb-button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #noDataResult>
+  <mb-no-data></mb-no-data>
+</ng-template>

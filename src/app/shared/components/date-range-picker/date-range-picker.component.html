@@ -1,0 +1,34 @@
+<div class="d-flex date-picker-group" [ngClass]="groupActive ? 'active':''">
+  <nz-date-picker
+    class="custom-fromDate "
+    [nzId]="'fromToDate'"
+    [nzFormat]="'dd/MM/yyyy'"
+    [(ngModel)]="fromDate"
+    [disabled]="this.disabled"
+    [ngClass]="this.fromDateActive ? 'active' : ''"
+    (ngModelChange)="this.onFromDateChange($event)"
+    [nzDisabledDate]="fromDateDisabledTime"
+    (keyup.enter)="onFromDateEnter($event)"
+    (nzOnOpenChange)="onDateFocus($event)"
+    #fromDatePicker
+    nzPlaceHolder="{{ 'action.fromDate' | translate }}"
+  >
+  </nz-date-picker>
+  <nz-date-picker
+    class="custom-endDate"
+    [nzId]="'toDate'"
+    [nzFormat]="'dd/MM/yyyy'"
+    [ngClass]="this.endDateActive ? 'active' : ''"
+    [disabled]="this.disabled"
+    [(ngModel)]="toDate"
+    [nzDisabledDate]="toDateDisabledTime"
+    (ngModelChange)="this.onEndDateChange($event)"
+    (keyup.enter)="onEndDateEnter($event)"
+    (nzOnOpenChange)="onDateFocus($event)"
+    #endDatePicker
+    nzPlaceHolder="{{ 'action.toDate' | translate }}"
+  ></nz-date-picker>
+</div>
+<ng-template #icon>
+  <img src="assets/images/icon/check.png" />
+</ng-template>

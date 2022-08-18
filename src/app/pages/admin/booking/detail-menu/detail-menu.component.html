@@ -1,0 +1,174 @@
+<div class="row">
+  <div class="col-8 title">
+    <mb-table-title [showBack]="true" title="{{'model.menu.detail' | translate }}">
+    </mb-table-title>
+  </div>
+</div>
+<div class="col-6 mb-2" class="row mt-3">
+  <div class="col-12">
+    <section class="content mt-3">
+      <div class="row">
+        <div class="col-6 mb-2">
+          <label>{{ 'model.menu.publish' | translate }}</label>
+          <div class="ms-1">
+            <nz-switch [(ngModel)]="published" (click)="openPubUnpubPopup()" [nzControl]="true"
+              [nzLoading]="statusIsLoading">
+            </nz-switch>
+          </div>
+        </div>
+        <div class="col-6 mb-2" *ngIf="menuId && menu">
+          <label>{{ 'model.order.commitMenu' | translate }}</label>
+          <div class="ms-1">
+            <nz-switch [(ngModel)]="changeStatus" (click)="openCommitMenuPopup()" [nzLoading]="changeStatusIsLoading"
+              [nzControl]="true">
+            </nz-switch>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+<div class="row mt-3">
+  <div class="col-12">
+    <section *ngIf="menuId && menu" class="content mt-3">
+      <div class="row mt-2">
+        <div class="col-12 mb-2">
+          <span><label>{{ 'model.menu.title' | translate }}:&nbsp;</label>{{menu.title}}</span>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-12 mb-2">
+          <span><label>{{ 'model.menu.type' | translate }}:&nbsp;</label>{{pipeType(menu.type) | translate}}</span>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-12 mb-2">
+          <span><label>{{ 'model.menu.price' | translate }}:&nbsp;</label>{{menu.price ? (menu.price | vnd):
+            "-"}}</span>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-12 mb-2">
+          <span><label>{{ 'model.menu.closedAt' | translate }}:&nbsp;</label>{{ menu.closedAt |
+            date:"dd-MM-yy HH:mm"}}</span>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-12 mb-2">
+          <span><label>{{ 'model.menu.note' | translate }}:&nbsp;</label>{{ menu.note }}</span>
+        </div>
+      </div>
+      <div *ngIf="menu?.products?.length > 0" class="row mt-2">
+        <label>{{ 'model.menu.selectedProducts' | translate }}</label>
+        <nz-table #table [(nzData)]="displayProducts" [nzNoResult]="noDataResult"
+          (nzQueryParams)="onChangeProductSearchParams($event)">
+          <thead>
+            <tr>
+              <th nzAlign="center" nzColumnKey="index">{{'common.index' | translate}}</th>
+              <th nzAlign="center" nzColumnKey="code" [nzSortFn]="true">{{'model.product.code' | translate}}</th>
+              <th nzAlign="center" nzColumnKey="name" [nzSortFn]="true">{{'model.product.name' | translate}}</th>
+              <th *ngIf="menu.type !== MENU_TYPE_STR.MENU_LUNCH" nzAlign="center" nzColumnKey="price" [nzSortFn]="true">
+                {{'model.product.price' | translate}}</th>
+              <th *ngIf="menu.type === MENU_TYPE_STR.MENU_LUNCH" nzAlign="center" nzColumnKey="subType"
+                [nzSortFn]="true">{{'model.product.subType' | translate}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let item of displayProducts; let i = index">
+              <tr>
+                <td nzAlign="center">{{ getProductIndex(i) }}</td>
+                <td nzAlign="center">{{ item.code }}</td>
+                <td nzAlign="center">{{ item.name }}</td>
+                <td *ngIf="menu.type !== MENU_TYPE_STR.MENU_LUNCH" nzAlign="center">{{ item.price ? (item.price |
+                  vnd) : '-' }}</td>
+                <td *ngIf="menu.type === MENU_TYPE_STR.MENU_LUNCH" nzAlign="center">{{ pipeSubtype(item.subType) |
+                  translate }}</td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </nz-table>
+        <mb-pagination [pageIndex]="productSearchRequest.pageIndex" [pageSize]="productSearchRequest.pageSize"
+          [total]="menu.products.length" (onChange)="onChangeProductSearchParams($event)">
+        </mb-pagination>
+      </div>
+      <div *ngIf="orders && menu" class="row mt-2">
+        <label>{{ 'model.menu.orders' | translate }}</label>
+        <nz-table #table [nzData]="orders" [nzNoResult]="noDataResult"
+          (nzQueryParams)="onChangeOrderSearchParams($event)">
+          <thead>
+            <tr>
+              <th nzAlign="center" nzColumnKey="index">{{'common.index' | translate}}</th>
+              <th nzAlign="center" nzColumnKey="code" [nzSortFn]="true">{{'model.order.code' | translate}}</th>
+              <th nzAlign="center" nzColumnKey="orderer">{{'model.order.orderer' | translate}}</th>
+              <th nzAlign="center" nzColumnKey="products">{{'model.order.products' | translate}}</th>
+              <th nzAlign="center" nzColumnKey="totalPrice" [nzSortFn]="true">{{'model.order.totalPrice' | translate}}
+              </th>
+              <th nzAlign="center" nzColumnKey="status" [nzSortFn]="true">{{'model.order.status.root' | translate}}</th>
+              <th nzAlign="center" nzColumnKey="type" [nzSortFn]="true">{{'model.order.type.root' | translate}}</th>
+              <th nzAlign="center" nzColumnKey="action">{{'action.msg' | translate}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let item of orders; let i = index">
+              <tr>
+                <td nzAlign="center">{{ getOrderIndex(i) }}</td>
+                <td nzAlign="center">{{item.code}}</td>
+                <td nzAlign="center">{{item.createdUserFullName}}</td>
+                <td nzAlign="center" [nzTooltipTitle]="getProductList(item)" [nzTooltipPlacement]="'top'" nz-tooltip>
+                  {{getProductList(item) | limitWord:40}}
+                </td>
+                <td nzAlign="center">{{item.totalPrice ? (item.totalPrice | vnd) : "-"}}</td>
+                <td nzAlign="center">
+                  <mb-badge [color]="formatColor(item.status)" [text]="pipeOrderStatus(item.status) | translate">
+                  </mb-badge>
+                </td>
+                <td nzAlign="center">{{pipeOrderType(item.type) | translate }}</td>
+                <td nzAlign="center">
+                  <mb-button-action *ngIf="item.status === ORDER_STATUS_CONST.PAID" [action]="'shopping-cart-x'"
+                    className="first" nzTooltipTitle="{{'model.order.revertToOrder' | translate}}"
+                    nzTooltipPlacement="top" nz-tooltip (click)="openRevertToOrderPopup(item)">
+                  </mb-button-action>
+                  <mb-button-action *ngIf="item.status !== ORDER_STATUS_CONST.PAID"
+                    [disable]="item.status === ORDER_STATUS_CONST.NEW" [action]="'shopping-cart'" className="first"
+                    nzTooltipTitle="{{'model.order.changeToPaid' | translate}}" nzTooltipPlacement="top" nz-tooltip
+                    (click)="item.status === ORDER_STATUS_CONST.NEW ? null : openChangeToPaidPopup(item) ">
+                  </mb-button-action>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </nz-table>
+        <mb-pagination [pageIndex]="orderSearchRequest.pageIndex" [pageSize]="orderSearchRequest.pageSize"
+          [total]="totalOrders" (onChange)="onChangeOrderSearchParams($event)">
+        </mb-pagination>
+      </div>
+    </section>
+  </div>
+</div>
+<section class="content mt-n3">
+  <div class="row mt-4">
+    <div class="col-12 text-center">
+      <button nz-button nzType="default" (click)="onCancel()">
+        {{ 'action.back' | translate }}
+      </button>
+      <button (click)="navigateToUpdatePage()" class="ms-3" nz-button nzType="primary">
+        {{ 'action.update' | translate }}
+      </button>
+    </div>
+  </div>
+</section>
+<mb-modal [title]="publishPopup.title" [content]="publishPopup.content" [okText]="publishPopup.okText"
+  [btnCentered]="true" [isVisible]="isPubUnpubPopupVisible" (emitter)="onPubUnpubModalClosed($event)"
+  [interpolateParams]="publishPopup.interpolateParams">
+</mb-modal>
+<mb-modal [title]="revertToOrderPopup.title" [content]="revertToOrderPopup.content" [okText]="revertToOrderPopup.okText"
+  [btnCentered]="true" [isVisible]="isRevertToOrderPopupVisible" (emitter)="onRevertToOrderPopupClosed($event)"
+  [interpolateParams]="publishPopup.interpolateParams">
+</mb-modal>
+<mb-modal [title]="changeToPaidPopup.title" [content]="changeToPaidPopup.content" [okText]="changeToPaidPopup.okText"
+  [btnCentered]="true" [isVisible]="isChangeToPaidPopupVisible" (emitter)="onChangeToPaidPopupClosed($event)"
+  [interpolateParams]="publishPopup.interpolateParams">
+</mb-modal>
+<ng-template #noDataResult>
+  <mb-no-data></mb-no-data>
+</ng-template>

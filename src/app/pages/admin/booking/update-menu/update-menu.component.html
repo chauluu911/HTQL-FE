@@ -1,0 +1,102 @@
+<div class="row">
+  <div class="col-8 title">
+    <mb-table-title [showBack]="true"
+      title="{{(action === ROUTER_ACTIONS.update ? 'model.menu.update' : action === ROUTER_ACTIONS.detail ? 'model.menu.detail' : 'model.menu.create' ) | translate }}">
+    </mb-table-title>
+  </div>
+</div>
+<div *ngIf="action === ROUTER_ACTIONS.detail" class="col-6 mb-2" class="row mt-3">
+  <div class="col-12">
+    <section class="content mt-3">
+      <div>
+        <label>{{ 'model.menu.publish' | translate }}</label>
+        <div class="ms-1">
+          <!-- <nz-switch [(ngModel)]="status" (click)="onPublishChange()" [nzControl]="true" [nzLoading]="statusIsLoading">
+          </nz-switch> -->
+          <nz-switch [(ngModel)]="status" (click)="openPubUnpubPopup()" [nzControl]="true"
+            [nzLoading]="statusIsLoading">
+          </nz-switch>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+<div class="row mt-3">
+  <div class="col-12">
+    <form [formGroup]="form" *ngIf="(menuId && menu.id) || !menuId">
+      <section class="content mt-3">
+        <div class="row mt-2">
+          <div class="col-12 mb-2">
+            <label>{{ 'model.menu.title' | translate }} <span class="text-danger">*</span></label>
+            <input nz-input formControlName="title" class="form-control"
+              [maxLength]="LENGTH_VALIDATOR.LABEL_MAX_LENGTH.MAX" placeholder="{{ 'model.menu.title' | translate }}" />
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-4 mb-2">
+            <label>{{ 'model.menu.type' | translate }} <span class="text-danger"
+                *ngIf="!(action === ROUTER_ACTIONS.detail)">*</span></label>
+            <nz-select formControlName="type" [nzNotFoundContent]="noDataResult">
+              <ng-container *ngFor="let type of types">
+                <nz-option [nzValue]="type.value" [nzLabel]="type.label | translate"></nz-option>
+              </ng-container>
+            </nz-select>
+          </div>
+          <div class="col-4 mb-2">
+            <label>{{ 'model.menu.price' | translate }} <span class="text-danger">*</span></label>
+            <input nz-input formControlName="price" class="form-control"
+              [maxLength]="LENGTH_VALIDATOR.LABEL_MAX_LENGTH.MAX" placeholder="{{ 'model.menu.price' | translate }}" />
+          </div>
+          <div class="col-4 mb-2">
+            <label>{{ 'model.menu.closedAt' | translate }} <span class="text-danger"
+                *ngIf="!(action === ROUTER_ACTIONS.detail)">*</span></label>
+            <nz-date-picker [nzDisabledDate]="disabledStartDate" nzShowTime nzFormat="yyyy-MM-dd HH:mm:ss"
+              formControlName="closedAt" nzPlaceHolder="Start">
+            </nz-date-picker>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-12 mb-2">
+            <label>{{ 'model.menu.note' | translate }} <span class="text-danger">*</span></label>
+            <textarea nz-input formControlName="note" class="form-control"
+              [maxLength]="LENGTH_VALIDATOR.LABEL_MAX_LENGTH.MAX"
+              placeholder="{{ 'model.menu.note' | translate }}"></textarea>
+          </div>
+        </div>
+        <div *ngIf="!(action === ROUTER_ACTIONS.detail)" class="row mt-2">
+          <div class="col-12 mb-2">
+            <label>{{ 'model.menu.chooseProducts' | translate }} <span class="text-danger"
+                *ngIf="!(action === ROUTER_ACTIONS.detail)">*</span></label>
+            <nz-transfer [nzRenderList]="[leftRenderList, null]" [nzListStyle]="{ 'height.px': 500 }"
+              [nzDataSource]="productDisplayList" [nzDisabled]="(action === ROUTER_ACTIONS.detail)" nzShowSearch
+              [nzNotFoundContent]="'model.menu.emptyProducts' | translate "
+              [nzTitles]="['model.menu.availableproduct' | translate, 'model.menu.selectedProducts' | translate]"
+              (nzSearchChange)="search($event)">
+            </nz-transfer>
+          </div>
+        </div>
+      </section>
+    </form>
+  </div>
+</div>
+<section class="content mt-n3">
+  <div class="row mt-4">
+    <div class="col-12 text-center">
+      <button nz-button nzType="default" (click)="onCancel()">
+        {{ (action === ROUTER_ACTIONS.detail ? 'action.back' : 'action.cancel') | translate }}
+      </button>
+      <button *ngIf="action === ROUTER_ACTIONS.detail" (click)="navigateToUpdatePage()" class="ms-3" nz-button
+        nzType="primary">
+        {{ 'action.update' | translate }}
+      </button>
+      <button *ngIf="action !== ROUTER_ACTIONS.detail"
+        (click)="action === ROUTER_ACTIONS.update ? onUpdateSubmit() : onSubmit()" class="ms-3" nz-button
+        nzType="primary">
+        {{ ( action === ROUTER_ACTIONS.update ? 'action.update' : 'action.create') | translate }}
+      </button>
+    </div>
+  </div>
+</section>
+<ng-template #noDataResult>
+  <mb-no-data></mb-no-data>
+</ng-template>

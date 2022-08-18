@@ -1,0 +1,83 @@
+<div class="content">
+  <div *nzModalTitle>
+    <span>{{ (action === ROUTER_ACTIONS.update
+      ? 'action.update'
+      : action === ROUTER_ACTIONS.detail ? 'action.detail' : 'action.create') | translate }}</span>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <form [formGroup]="form">
+        <div class="row">
+          <div class="col-6 mb-2">
+            <label>{{ 'model.product.name' | translate }} <span class="text-danger">*</span></label>
+            <input formControlName="name" nz-input [maxLength]="LENGTH_VALIDATOR.NAME_MAX_LENGTH.MAX"
+              placeholder="{{ 'model.product.name' | translate }}">
+            <ng-container *ngIf="form.get('name')?.touched || form.get('name')?.dirty">
+              <span class="text-danger" *ngIf="form.get('name')?.hasError('required')">
+                <mb-not-blank [value]="'model.product.name'"></mb-not-blank>
+              </span>
+            </ng-container>
+          </div>
+          <div class="col-6 mb-2">
+            <label>{{ 'model.product.type' | translate }} <span class="text-danger">*</span></label>
+            <nz-select formControlName="type" [nzPlaceHolder]="'model.product.type' | translate">
+              <ng-container *ngFor="let type of types">
+                <nz-option [nzValue]="type.value" [nzLabel]="type.label | translate "></nz-option>
+              </ng-container>
+            </nz-select>
+            <ng-container *ngIf="form.get('type')?.touched || form.get('type')?.dirty">
+              <span class="text-danger" *ngIf="form.get('type')?.hasError('required')">
+                <mb-not-blank [value]="'model.product.type'"></mb-not-blank>
+              </span>
+            </ng-container>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6 mb-2">
+            <label>{{ 'model.product.price' | translate }} <span class="text-danger">*</span></label>
+            <input appCurrencyFormatter formControlName="price" nz-input
+              [maxLength]="LENGTH_VALIDATOR.NAME_MAX_LENGTH.MAX" placeholder="{{ 'model.product.price' | translate }}">
+            <ng-container *ngIf="form.get('price')?.touched || form.get('price')?.dirty">
+              <span class="text-danger" *ngIf="form.get('price')?.hasError('required')">
+                <mb-not-blank [value]="'model.product.price'"></mb-not-blank>
+              </span>
+            </ng-container>
+          </div>
+          <div class="col-6 mb-2">
+            <label>{{ 'model.product.subType' | translate }} <span class="text-danger">*</span></label>
+            <nz-select formControlName="subType" [nzPlaceHolder]="'model.product.subType' | translate">
+              <ng-container *ngFor="let subType of subTypes">
+                <nz-option [nzValue]="subType.value" [nzLabel]="subType.label | translate "></nz-option>
+              </ng-container>
+            </nz-select>
+            <ng-container *ngIf="form.get('subType')?.touched || form.get('subType')?.dirty">
+              <span class="text-danger" *ngIf="form.get('subType')?.hasError('required')">
+                <mb-not-blank [value]="'model.product.subType'"></mb-not-blank>
+              </span>
+            </ng-container>
+          </div>
+        </div>
+        <div class="row">
+          <label>{{ 'model.product.image' | translate }}</label>
+          <div class="col-12 mb-2">
+            <app-upload-image [customSizeImg]="false" [acceptTypeFiles]="['image']" (emitter)="getFiles($event)"
+              [imageId]="product.imageId" [alternateImageUrl]="foodPlaceholder" className="image"
+              nzTooltipPlacement="top" nz-tooltip>
+            </app-upload-image>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 text-center" *nzModalFooter>
+      <button nz-button nzType="default" class="e-2" (click)="onCancel()">
+        {{ (action === ROUTER_ACTIONS.detail ? 'action.back' : 'action.cancel') | translate }}
+      </button>
+      <button *ngIf="action !== ROUTER_ACTIONS.detail" nz-button nzType="primary" (click)="onSubmit()"
+        [disabled]="form.invalid">
+        {{ (action === ROUTER_ACTIONS.update ? 'action.update' : 'action.create') | translate }}
+      </button>
+    </div>
+  </div>
+</div>

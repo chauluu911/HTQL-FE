@@ -1,0 +1,40 @@
+.department_container {
+  min-height: 70vh;
+}
+
+.department_list_child,
+.department_info {
+  // overflow-x: scroll;
+}
+
+.department_list_child::-webkit-scrollbar {
+  width: 5px;
+}
+
+.department_title {
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+}
+
+.department_block {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 1px 1px 5px rgb(187, 187, 187, 0.4);
+  padding: 10px;
+}
+
+.departmnet_info_group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.departmnet_info_group_label {
+  text-align: left;
+  width: 200px;
+}
+
+.departmnet_info_group_content {
+  font-size: 14px;
+}

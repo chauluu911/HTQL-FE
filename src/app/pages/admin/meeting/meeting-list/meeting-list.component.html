@@ -1,0 +1,210 @@
+<div class="content">
+    <mb-table-title [title]="getTranslate('list')"></mb-table-title>
+    <nz-table class="content mt-3">
+        <div [formGroup]="form" class="filter-element">
+            <div class="row p-4">
+                <div class="col-4">
+                    <label>{{ getTranslate('title') }}</label>
+                    <input formControlName="title" nz-input class="form-control"
+                        placeholder="{{ getTranslate('enterTitle') }}">
+                </div>
+                <div class="col-4">
+                    <label>{{ getTranslate('meetingRoom') }}</label>
+                    <nz-select formControlName="roomId" nzAllowClear removeOptionTitle (nzFocus)="searchRooms('')"
+                        nzShowSearch appDebounceKeyUp (onEvent)="searchRooms($event)" nzServerSearch
+                        nzPlaceHolder="{{ getTranslate('meetingRoom') }}">
+                        <nz-option *ngFor="let room of rooms" [nzLabel]="room.location" [nzValue]="room.id"
+                            [nzCustomContent]="true">
+                            <div container="body" [animation]="false" [openDelay]="100" [closeDelay]="0"
+                                [ngbTooltip]="room.location">{{room.code}} - {{room.location}}</div>
+                        </nz-option>
+                    </nz-select>
+                </div>
+                <div class="col-4">
+                    <label>{{ getTranslate('repeatType') }}</label>
+                    <nz-select formControlName="repeatType" nzAllowClear removeOptionTitle
+                        nzPlaceHolder="{{ getTranslate('repeatType') }}">
+                        <nz-option *ngFor="let service of repeatTypes" [nzLabel]="service.label | translate"
+                            [nzValue]="service.value" [nzCustomContent]="true">
+                            <div container="body" [animation]="false" [openDelay]="100" [closeDelay]="0"
+                                [ngbTooltip]="(service?.label!) | translate">{{(service?.label!) | translate}}
+                            </div>
+                        </nz-option>
+                    </nz-select>
+                </div>
+                <div class="col-4 mt-3">
+                    <label>{{ getTranslate('startDate') }}</label>
+                    <div class="date-picker">
+                        <nz-date-picker formControlName="startDate" [nzId]="'startDatePicker'"
+                            (keyup.enter)="enterDatePicker($event, 'startDate')" [nzDisabledDate]="disabledBeforeToday"
+                            [nzFormat]="'dd/MM/yyyy'" #startDatePicker nzPlaceHolder="DD/MM/YYYY">
+                        </nz-date-picker>
+                    </div>
+                </div>
+                <div class="col-4 mt-3">
+                    <label>{{ getTranslate('endDate') }}</label>
+                    <div class="date-picker">
+                        <nz-date-picker formControlName="endDate" [nzId]="'endDatePicker'"
+                            (keyup.enter)="enterDatePicker($event, 'endDate')" [nzDisabledDate]="disabledBeforeStartAt"
+                            [nzFormat]="'dd/MM/yyyy'" #endDatePicker nzPlaceHolder="DD/MM/YYYY">
+                        </nz-date-picker>
+                    </div>
+                </div>
+                <div class="col-4 mt-3">
+                    <label>{{ 'common.status' | translate }}</label>
+                    <nz-select formControlName="meetingStatus" nzAllowClear removeOptionTitle
+                        nzPlaceHolder="{{ 'common.status' | translate }}">
+                        <nz-option *ngFor="let service of meetingStatus" [nzLabel]="service.label | translate"
+                            [nzValue]="service.value" [nzCustomContent]="true">
+                            <div container="body" [animation]="false" [openDelay]="100" [closeDelay]="0"
+                                [ngbTooltip]="(service?.label!) | translate">{{(service?.label!) | translate}}
+                            </div>
+                        </nz-option>
+                    </nz-select>
+                </div>
+            </div>
+            <!-- <div class="row p-4">
+                
+            </div> -->
+            <div class="row mt-3 mb-3 text-center">
+                <div class="col-12">
+                    <button class="me-3" nz-button nzType="default" (click)="resetSearch()">
+                        {{ 'action.reset' | translate }}
+                    </button>
+                    <button nz-button nzType="primary" (click)="onSearch()">
+                        {{ ('common.search') | translate }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nz-table>
+    <div class="row mt-3">
+        <div class="col-12 text-end">
+            <mb-button class="float-end" [type]="'primary'" [icon]="'plus'" [text]="'action.create'" (click)="create()"
+                *hasRoles="['meeting:create']">
+            </mb-button>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-12">
+            <nz-table #table [nzData]="meetings" [nzNoResult]="noDataResult" [nzTableLayout]="'auto'"
+                (nzQueryParams)="onQueryParamsChange($event)">
+                <thead>
+                    <tr>
+                        <th nzAlign="center">{{'common.index' | translate}}</th>
+                        <th nzAlign="left" nzColumnKey="title" [nzSortFn]="true">{{ getTranslate('title') }}</th>
+                        <th nzAlign="left" nzColumnKey="meetingDate">{{ getTranslate('meetingDate') }}
+                        </th>
+                        <th nzAlign="left" nzColumnKey="meetingTime">{{ getTranslate('meetingTime') }}
+                        </th>
+                        <th nzAlign="left" nzColumnKey="createdBy" [nzSortFn]="true">{{ getTranslate('createdBy') }}
+                        </th>
+                        <th nzAlign="center" nzColumnKey=" repeatType">{{ getTranslate('method') }}
+                        </th>
+                        <th nzAlign="center" nzColumnKey="approve">{{ getTranslate('approve') }}</th>
+                        <th nzAlign="center" nzColumnKey="status">{{'common.status' | translate}}</th>
+                        <th nzAlign="center">{{'action.msg' | translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let item of meetings; let i = index">
+                        <tr>
+                            <td nzAlign="center">{{ getIndex(i) }}</td>
+                            <td nzAlign="left">{{ item.title }}</td>
+                            <ng-container *ngIf="compareStartDateAndEndDate(item.startAt, item.endDate) === true">
+                                <td nzAlign="left">{{ item.startAt | date: 'dd/MM/yyyy' }}</td>
+                            </ng-container>
+                            <ng-container *ngIf="compareStartDateAndEndDate(item.startAt, item.endDate) === false">
+                                <td nzAlign="left">{{ item.startAt | date: 'dd/MM/yyyy' }} - {{ item.endDate | date:
+                                    'dd/MM/yyyy' }}</td>
+                            </ng-container>
+                            <td nzAlign="left">{{ item.startAt | date: 'HH:mm' }} - {{ item.finishAt | date: 'HH:mm' }}
+                            <td nzAlign="left">{{ item.createdBy }}</td>
+                            <td nzAlign="center" class="col-1">
+                                <ng-container *ngFor="let service of repeatTypes">
+                                    <ng-container *ngIf="service.value === item.repeatType">
+                            <td class="pb-2">
+                                <mb-badge [color]="'badge-info'" [text]="service?.label">
+                                </mb-badge>
+                            </td>
+                    </ng-container>
+                    </ng-container>
+                    <ng-container *ngFor="let service of meetingTypes">
+                        <ng-container *ngIf="service.value === item.meetingType">
+                            <mb-badge [color]="'badge-warning'" [text]="service?.label">
+                            </mb-badge>
+                        </ng-container>
+                    </ng-container>
+                    </td>
+                    <ng-container *ngIf="item.approveStatus === undefined">
+                        <td></td>
+                    </ng-container>
+                    <ng-container *ngIf="item.approveStatus !== undefined">
+                        <td nzAlign="center">
+                            <ng-container *ngIf="item.approveStatus === APPROVE_STATUSS.UNCONFIRMED">
+                                <mb-badge [color]="'badge-warning'" [text]="formatStatus(item.approveStatus)">
+                                </mb-badge>
+                            </ng-container>
+                            <ng-container *ngIf="item.approveStatus === APPROVE_STATUSS.APPROVED">
+                                <mb-badge [color]="'badge-info'" [text]="formatStatus(item.approveStatus)">
+                                </mb-badge>
+                            </ng-container>
+                            <ng-container *ngIf="item.approveStatus === APPROVE_STATUSS.REJECTED">
+                                <mb-badge [color]="'badge-secondary'" [text]="formatStatus(item.approveStatus)">
+                                </mb-badge>
+                            </ng-container>
+                        </td>
+                    </ng-container>
+                    <td nzAlign="center">
+                        <mb-badge
+                            [color]="item.meetingStatus === MEETING_STATUSS.MEETING_ACTIVE ? 'badge-success' : 'badge-secondary'"
+                            [text]="formatStatus(item.meetingStatus)">
+                        </mb-badge>
+                    </td>
+                    <td nzAlign="center" class="action">
+                        <ng-container *ngIf="item.meetingStatus === MEETING_STATUSS.MEETING_ACTIVE">
+                            <mb-button-action [action]="'view'" nzTooltipTitle="{{'action.detail' | translate}}"
+                                *hasRoles="['meeting:view']" nzTooltipPlacement="top" nz-tooltip (click)="detail(item)">
+                            </mb-button-action>
+                            <ng-container
+                                *ngIf="item.organizerId === currentUser.id || currentUser.userPrimary.isRoot || item.presiderId === currentUser.id">
+                                <mb-button-action [action]="'edit'" className="first" *hasRoles="['meeting:update']"
+                                    nzTooltipTitle="{{'action.update' | translate}}" nzTooltipPlacement="top" nz-tooltip
+                                    (click)="update(item)">
+                                </mb-button-action>
+                            </ng-container>
+                            <ng-container *ngIf="item.approveStatus">
+                                <mb-button-action [action]="'cancel'" className="last" *hasRoles="['meeting:update']"
+                                    nzTooltipTitle="{{'action.cancel' | translate}}" nzTooltipPlacement="top" nz-tooltip
+                                    (click)="cancel(false, item)">
+                                </mb-button-action>
+                            </ng-container>
+                        </ng-container>
+                        <ng-container *ngIf="item.meetingStatus === MEETING_STATUSS.MEETING_CANCELED">
+                            <ng-container
+                                *ngIf="item.organizerId === currentUser.id || currentUser.userPrimary.isRoot || item.presiderId === currentUser.id">
+                                <mb-button-action [action]="'delete'" *hasRoles="['meeting:update']"
+                                    nzTooltipTitle="{{'action.delete' | translate}}" nzTooltipPlacement="top" nz-tooltip
+                                    (click)="delete(false, item)">
+                                </mb-button-action>
+                            </ng-container>
+                        </ng-container>
+                    </td>
+                    </tr>
+                    </ng-container>
+                </tbody>
+            </nz-table>
+            <mb-pagination [pageIndex]="pageIndex" [pageSize]="pageSize" [total]="total"
+                (onChange)="onQuerySearch($event)">
+            </mb-pagination>
+        </div>
+    </div>
+</div>
+
+<ng-template #noDataResult>
+    <mb-no-data></mb-no-data>
+</ng-template>
+
+<mb-modal [title]="groupPopup.title" [content]="groupPopup.content" [interpolateParams]="groupPopup.interpolateParams"
+    [okText]="groupPopup.okText" [btnCentered]="true" [isVisible]="isVisible" (emitter)="actionCustom($event)">
+</mb-modal>

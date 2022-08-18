@@ -1,0 +1,82 @@
+<div class="content">
+    <div *nzModalTitle>
+        <span>{{ getTranslate('title') }}</span>
+    </div>
+    <div class="row mb-2">
+        <div class="col-lg-4">
+            <label>{{ getTranslate('meetingTitle') }}:</label>
+        </div>
+        <div class="col-lg-8">
+            <span>
+                <p>{{ userSchedulerResponse.title ? userSchedulerResponse.title : ('common.noInfo' | translate) }}</p>
+            </span>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-lg-4">
+            <label>{{ getTranslate('meetingTime')}}:</label>
+        </div>
+        <div class="col-lg-8">
+            <span>
+                <p>{{ userSchedulerResponse.startAt | date: 'EEEE, MMMM d, y h:mm a'}} - {{
+                    userSchedulerResponse.finishAt |
+                    date: 'h:mm a'}}
+                </p>
+            </span>
+        </div>
+    </div>
+    <ng-container *ngIf="meetingType === MEETING_TYPES.OFFLINE">
+        <div class="row mb-2">
+            <div class="col-lg-4">
+                <label>{{ getTranslate('meetingRoom') }}:</label>
+            </div>
+            <div class="col-lg-8">
+                <ng-container *ngIf="userSchedulerResponse.room">
+                    <p>{{ userSchedulerResponse.room.name }} - {{ userSchedulerResponse.room.code }}</p>
+                </ng-container>
+                <ng-container *ngIf="!userSchedulerResponse.room">
+                    {{ 'common.noInfo' | translate }}
+                </ng-container>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="meetingType === MEETING_TYPES.ONLINE">
+        <div class="row mb-2">
+            <div class="col-lg-4">
+                <label>{{ getTranslate('link') }}:</label>
+            </div>
+            <div class="col-lg-8">
+                <p>{{ userSchedulerResponse.link ? userSchedulerResponse.link : ('common.noInfo' | translate) }}</p>
+            </div>
+        </div>
+    </ng-container>
+    <div class="row mb-2">
+        <div class="col-lg-4">
+            <label>{{ getTranslate('organizerName') }}:</label>
+        </div>
+        <div class="col-lg-8">
+            <p>{{ userSchedulerResponse.organizerName ? userSchedulerResponse.organizerName : ('common.noInfo' |
+                translate) }}</p>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-lg-4">
+            <label>{{ getTranslate('phoneNumber') }}:</label>
+        </div>
+        <div class="col-lg-8">
+            <p>{{ user.phoneNumber}}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 text-center" *nzModalFooter>
+            <button nz-button nzType="default" class="mr-2" (click)="onCancel()">
+                {{ 'action.close' | translate }}
+            </button>
+            <ng-container *ngIf="userSchedulerResponse.approveStatus === APPROVE_STATUSS.APPROVED">
+                <button class="me-2" nz-button nzType="primary" (click)="onReject()">
+                    {{ 'action.cancel' | translate }}
+                </button>
+            </ng-container>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,67 @@
+.group_user_item {
+  border-radius: 10px;
+  box-shadow: 1px 1px 5px #bbb;
+  padding: 13px 15px;
+  position: relative;
+  transition: all 0.2s;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.group_user_item_header {
+}
+.group_user_item_header_avatar {
+}
+.group_user_item_header_avatar_member {
+  background-color: rgb(233, 204, 131);
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+.group_user_item_body {
+}
+.group_user_item_body_name {
+  font-weight: 600;
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.group_user_item_body_description {
+  height: 70px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.group_user_item_body_label {
+  font-weight: 500;
+}
+.group_user_item_bottom {
+  margin-top: auto;
+}
+.group_user_item_bottom_options {
+}
+.group_user_item_option {
+}
+.avatar-blue {
+  background-color: lightblue;
+}
+
+.avatar-yellow {
+  background-color: yellowgreen;
+}
+
+.avatar-gray {
+  background-color: #ccc;
+}
+.poiter {
+  cursor: pointer;
+}
+.poiter:hover {
+  color: rgb(43, 168, 168);
+}
+.danger {
+  color: rgb(240, 56, 56) !important;
+  border-color: rgb(240, 56, 56) !important;
+}

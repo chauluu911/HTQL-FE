@@ -1,0 +1,42 @@
+::ng-deep.badge-new {
+  background-color: #FFA800;
+}
+
+// .ant-table table {
+//   border: none;
+// }
+
+// .ant-table table tbody tr td {
+//   border: none;
+// }
+
+// .ant-table-container table thead tr:first-child th:first-child {
+//   border-top-left-radius: 0px;
+// }
+
+// .ant-table-container table thead tr:first-child th:last-child {
+//   border-top-right-radius: 0px;
+// }
+
+::ng-deep.ant-transfer-list-body-customize-wrapper.ng-star-inserted nz-table nz-spin div div nz-table-inner-default div {
+  table {
+    border: none;
+  }
+
+  table tbody tr td {
+    border: none;
+  }
+
+  .ant-table-container table thead tr:first-child th:first-child {
+    border-top-left-radius: 0px;
+  }
+
+  .ant-table-container table thead tr:first-child th:last-child {
+    border-top-right-radius: 0px;
+  }
+}
+
+
+#productDetailLink:hover {
+  cursor: pointer;
+}

@@ -1,0 +1,68 @@
+<div class="content">
+    <div *nzModalTitle>
+        <span *ngIf="!isDetail">{{ (isUpdate ? 'action.update' : 'action.create') | translate }}</span>
+        <span *ngIf="isDetail">{{ 'action.detail' | translate }}</span>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <form [formGroup]="form">
+                <div class="row">
+                    <div class="col-12 mb-2">
+                        <label>{{ getTranslate('code') }} <span class="text-danger">*</span></label>
+                        <input formControlName="code" nz-input [disabled]="isUpdate"
+                            [maxLength]="LENGTH_VALIDATOR.CODE_MAX_LENGTH.MAX"
+                            placeholder="{{ getTranslate('enterCode') | translate }}">
+                        <ng-container *ngIf="form.get('code')?.touched || form.get('code')?.dirty">
+                            <span class="text-danger" *ngIf="form.get('code')?.hasError('required')">
+                                <mb-not-blank [value]="getTranslate('code')"></mb-not-blank>
+                            </span>
+                            <span class="text-danger" *ngIf="form.get('code')?.hasError('pattern')">
+                                <small>{{ 'common.pattern' | translate }}</small>
+                            </span>
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 mb-2">
+                        <label>{{ getTranslate('name') }} <span class="text-danger">*</span></label>
+                        <input formControlName="name" nz-input [maxLength]="LENGTH_VALIDATOR.NAME_MAX_LENGTH.MAX"
+                            placeholder="{{ getTranslate('enterName') | translate }}">
+                        <ng-container *ngIf="form.get('name')?.touched || form.get('name')?.dirty">
+                            <span class="text-danger" *ngIf="form.get('code')?.hasError('required')">
+                                <mb-not-blank [value]="getTranslate('name')"></mb-not-blank>
+                            </span>
+                            <span class="text-danger" *ngIf="form.get('name')?.hasError('pattern')">
+                                <small>{{ 'common.pattern' | translate }}</small>
+                            </span>
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 mb-2">
+                        <label>{{ getTranslate('location') }} <span class="text-danger">*</span></label>
+                        <input formControlName="location" nz-input [maxLength]="LENGTH_VALIDATOR.ADDRESS_MAX_LENGTH.MAX"
+                            placeholder="{{ getTranslate('enterLocation') | translate }}">
+                        <ng-container *ngIf="form.get('location')?.touched || form.get('location')?.dirty">
+                            <span class="text-danger" *ngIf="form.get('location')?.hasError('required')">
+                                <mb-not-blank [value]="getTranslate('location')"></mb-not-blank>
+                            </span>
+                            <span class="text-danger" *ngIf="form.get('location')?.hasError('pattern')">
+                                <small>{{ 'common.pattern' | translate }}</small>
+                            </span>
+                        </ng-container>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 text-center" *nzModalFooter>
+            <button nz-button nzType="default" class="mr-2" (click)="onCancel()">
+                {{ (isDetail ? 'action.close' : 'action.cancel') | translate }}
+            </button>
+            <button nz-button nzType="primary" *ngIf="!isDetail" (click)="onSubmit()" [disabled]="form.invalid">
+                {{ (isUpdate ? 'action.save' : 'action.save') | translate }}
+            </button>
+        </div>
+    </div>
+</div>

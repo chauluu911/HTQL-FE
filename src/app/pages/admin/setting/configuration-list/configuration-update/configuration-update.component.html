@@ -1,0 +1,83 @@
+<div class="content">
+  <div *nzModalTitle>
+    <span>{{  this.title || '' }}</span>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <form [formGroup]="form">
+        <div class="row">
+          <div class="col">
+            <label>{{ 'model.configuration.type' | translate }}<span class="text-danger">*</span>:</label>
+            <!--              [nzDropdownRender]="renderTemplateCompany"-->
+            <nz-select nzAllowClear
+                       nzMode="default" [nzMaxTagCount]="1" [nzShowArrow]="true"
+                       formControlName="type" removeOptionTitle
+                       nzPlaceHolder="{{ 'model.configuration.type' | translate }}"
+                       id="configurationType">
+              <nz-option *ngFor="let type of configurationTypes" [nzCustomContent]="true"
+                         [nzValue]="type?.value" [nzLabel]="type.label! | translate">
+                <div container="body" [animation]="false"
+                     [openDelay]="100"
+                     [closeDelay]="0" [ngbTooltip]="type.label| translate">{{type.label| translate}}</div>
+              </nz-option>
+            </nz-select>
+            <mb-validate-message [errorMessages]="this.validateMessages" [fieldName]="'type'" [form]="this.form">
+            </mb-validate-message>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col">
+            <label>{{ 'model.configuration.code' | translate }}<span class="text-danger">*</span>:</label>
+            <input nz-input formControlName="code" id="configurationCode" class="form-control"
+                   [maxLength]="LENGTH_VALIDATOR.CODE_MAX_LENGTH.MAX"
+                   app-trim
+                   placeholder="{{ 'model.survey.name' | translate }}"/>
+            <mb-validate-message [errorMessages]="this.validateMessages" [fieldName]="'code'" [form]="this.form">
+            </mb-validate-message>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col">
+            <label>{{ (this.translatePath + 'name') | translate }}<span class="text-danger">*</span>:</label>
+            <input nz-input formControlName="name" id="ConfigurationName" class="form-control"
+                   app-trim
+                   [maxLength]="LENGTH_VALIDATOR.NAME_MAX_LENGTH.MAX"
+                   placeholder="{{ (this.translatePath+'name') | translate }}"/>
+            <mb-validate-message [errorMessages]="this.validateMessages" [fieldName]="'name'" [form]="this.form">
+            </mb-validate-message>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col">
+            <label>{{ (this.translatePath + 'value') | translate }}<span class="text-danger">*</span>:</label>
+            <textarea rows="5"
+                      app-trim
+                      formControlName="value" [maxLength]="LENGTH_VALIDATOR.DESC_MAX_LENGTH.MAX"
+                      placeholder="{{ (this.translatePath+'value') | translate }}"
+                      class="form-control"
+                      nz-input>
+            </textarea>
+            <mb-validate-message [errorMessages]="this.validateMessages" [fieldName]="'value'" [form]="this.form">
+            </mb-validate-message>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 text-center" *nzModalFooter>
+      <button nz-button nzType="default" class="me-2"
+              (click)="onCancel()">
+        {{ 'action.cancel' | translate }}
+      </button>
+      <button nz-button nzType="primary"
+              (click)="onSubmit()"
+              [disabled]="!this.form.valid"
+              *hasRoles="['configuration:create','configuration:update']">
+        {{ ('action.save') | translate }}
+      </button>
+    </div>
+  </div>
+</div>
+

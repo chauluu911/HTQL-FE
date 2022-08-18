@@ -1,0 +1,88 @@
+.avatar-blue {
+    background-color: lightblue;
+}
+
+.avatar-yellow {
+    background-color: yellowgreen;
+}
+
+.avatar-gray {
+    background-color: #ccc;
+}
+.gird_view_container{
+}
+.grid_item {
+    border-radius: 10px;
+    box-shadow: 1px 1px 5px #bbb;
+    padding: 13px 20px;
+    position: relative;
+    transition: all 0.2s;
+    z-index: 1;
+    height: 100%;
+}
+
+.grid_item_header {}
+
+.grid_item_header_info {}
+
+.grid_item_header_info_name {
+    font-weight: 600;
+    font-size: 16px;
+}
+.grid_item_header_avatar{
+    cursor: pointer;
+}
+.cursor{
+    cursor: pointer;
+}
+.cursor:hover {
+    color: rgb(43, 168, 168);
+}
+
+.grid_item_header_info_jobTitle {
+    color: #B5B5C3;
+}
+
+.grid_item_body {}
+
+.grid_item_body_description {
+    height: 70px;
+    text-align: justify;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.grid_item_body_info {}
+
+.body_info_group {
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.body_info_group_label {
+    font-weight: 600;
+}
+
+.body_info_group_label_content {
+    text-align: right;
+
+}
+
+.body_info_group_content {
+    color: #707083;
+}
+
+.btn_detail:hover {
+    background-color: rgb(43, 168, 168);
+    border: none;
+    color: white;
+}
+
+.grid_item_footer {
+    margin-top: auto !important;
+}

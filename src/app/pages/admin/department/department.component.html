@@ -1,0 +1,221 @@
+<div class="content">
+  <mb-table-title [title]="'model.department.list'"></mb-table-title>
+  <nz-table>
+    <div [formGroup]="form" class="filter-element mt-3">
+      <div class="row p-4">
+        <div class="col-3">
+          <label>{{ "common.keyword" | translate }}</label>
+          <input
+            type="text"
+            nz-input
+            formControlName="keyword"
+            [placeholder]="'model.department.enterKeyword' | translate"
+            (keyup.enter)="this.search()"
+          />
+        </div>
+        <div class="col-3">
+          <label>{{ "model.department.createdAt" | translate }}</label>
+          <app-date-range-picker
+            [fromDate]="this.form?.get('startCreatedAt')?.value"
+            [toDate]="this.form?.get('endCreatedAt')?.value"
+            (rangeDateChange)="this.onChangeCreatedDate($event)"
+          >
+          </app-date-range-picker>
+        </div>
+        <div class="col-3">
+          <label>{{ "model.department.lastModifiedAt" | translate }}</label>
+          <app-date-range-picker
+            [fromDate]="this.form?.get('startLastModifiedAt')?.value"
+            [toDate]="this.form?.get('endLastModifiedAt')?.value"
+            (rangeDateChange)="this.onChangeLastModifieddDate($event)"
+          >
+          </app-date-range-picker>
+        </div>
+        <div class="col-3">
+          <label>{{ "model.department.status" | translate }}</label>
+          <nz-select
+            formControlName="status"
+            nzAllowClear
+            removeOptionTitle
+            nzPlaceHolder="{{ 'model.department.selectStatus' | translate }}"
+          >
+            <nz-option
+              *ngFor="let temp of departmentStatus"
+              [nzLabel]="temp.label | translate"
+              [nzValue]="temp.value"
+              [nzCustomContent]="true"
+            >
+              <div
+                container="body"
+                [animation]="false"
+                [openDelay]="100"
+                [closeDelay]="0"
+                [ngbTooltip]="temp?.label! | translate"
+              >
+                {{ temp?.label! | translate }}
+              </div>
+            </nz-option>
+          </nz-select>
+        </div>
+      </div>
+      <div class="row mt-3 mb-3 text-center">
+        <div class="col-12">
+          <button
+            class="me-3"
+            nz-button
+            nzType="default"
+            (click)="resetSearch()"
+          >
+            {{ "action.reset" | translate }}
+          </button>
+          <button nz-button nzType="primary" (click)="search()">
+            {{ "common.search" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </nz-table>
+  <!--end filter element -->
+  <!-- create button -->
+  <div class="row mt-3">
+    <div class="col-12 text-end">
+      <mb-button
+        [type]="'primary'"
+        *hasRoles="['department:create']"
+        [icon]="'plus'"
+        [text]="'action.create'"
+        (click)="create()"
+      >
+      </mb-button>
+    </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col-12">
+      <nz-table
+        #table
+        [nzData]="departments"
+        [nzTableLayout]="'auto'"
+        (nzQueryParams)="onQueryParamsChange($event)"
+      >
+        <thead>
+          <tr>
+            <th nzAlign="center">{{ "model.department.id" | translate }}</th>
+            <th nzAlign="left" nzColumnKey="name" [nzSortFn]="true">
+              {{ "model.department.name" | translate }}
+            </th>
+            <th nzAlign="left" nzColumnKey="code" [nzSortFn]="true">
+              {{ "model.department.code" | translate }}
+            </th>
+            <th nzAlign="left">
+              {{ "model.department.description" | translate }}
+            </th>
+            <th nzAlign="left">
+              {{ "model.department.createdBy" | translate }}
+            </th>
+            <th nzAlign="center" nzColumnKey="createdAt" [nzSortFn]="true">
+              {{ "model.department.createdAt" | translate }}
+            </th>
+            <th nzAlign="left" nzColumnKey="lastModifiedAt" [nzSortFn]="true">
+              {{ "model.department.lastModifiedAt" | translate }}
+            </th>
+            <th nzAlign="center">
+              {{ "model.department.status" | translate }}
+            </th>
+            <th nzAlign="center">
+              {{ "action.msg" | translate }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let department of departments; let i = index">
+            <tr>
+              <td nzAlign="center">{{ getIndex(i) }}</td>
+              <td nzAlign="left">{{ department?.name }}</td>
+              <td nzAlign="left">{{ department?.code }}</td>
+              <td nzAlign="left">{{ department?.description }}</td>
+              <td nzAlign="left">{{ department?.createdBy }}</td>
+              <td nzAlign="center">
+                {{ department.createdAt | date: "dd/MM/yyyy" }}
+              </td>
+              <td nzAlign="left">
+                {{ department.lastModifiedAt | date: "dd/MM/yyyy" }}
+              </td>
+              <td nzAlign="left">
+                <mb-badge
+                  [color]="
+                    department.status === departmentActive
+                      ? 'badge-info'
+                      : 'badge-secondary'
+                  "
+                  [text]="format(department.status, 'status')"
+                >
+                </mb-badge>
+              </td>
+              <td nzAlign="center" class="action">
+                <mb-button-action
+                  *hasRoles="['department:update']"
+                  [action]="'edit'"
+                  className="first"
+                  nzTooltipTitle="{{ 'action.update' | translate }}"
+                  nzTooltipPlacement="top"
+                  nz-tooltip
+                  (click)="update(department)"
+                >
+                </mb-button-action>
+
+                <mb-button-action
+                  [action]="'view'"
+                  className="first"
+                  nzTooltipTitle="{{ 'action.detail' | translate }}"
+                  nzTooltipPlacement="top"
+                  nz-tooltip
+                  (click)="detaiDepartment(department)"
+                >
+                </mb-button-action>
+
+                <mb-button-action
+                  *hasRoles="['department:update']"
+                  [action]="
+                    department.status === departmentActive ? 'lock' : 'unlock'
+                  "
+                  [className]="'last'"
+                  nzTooltipTitle="{{
+                    (department.status === departmentActive
+                      ? 'action.lock'
+                      : 'action.unlock'
+                    ) | translate
+                  }}"
+                  nzTooltipPlacement="top"
+                  nz-tooltip
+                  (click)="lock(department)"
+                >
+                </mb-button-action>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </nz-table>
+      <mb-pagination
+        [pageIndex]="pageIndex"
+        [pageSize]="pageSize"
+        [total]="total"
+        (onChange)="onQuerySearch($event)"
+      >
+      </mb-pagination>
+
+      <mb-modal
+        [title]="groupLockPopup.title"
+        [content]="groupLockPopup.content"
+        [okText]="groupLockPopup.okText"
+        [btnCentered]="true"
+        [isVisible]="isVisible"
+        (emitter)="onLockAndUnLock($event)"
+      >
+      </mb-modal>
+    </div>
+  </div>
+</div>
+
+<ng-template #noDataResult>
+  <mb-no-data></mb-no-data>
+</ng-template>

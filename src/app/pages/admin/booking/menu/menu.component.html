@@ -1,0 +1,125 @@
+<mb-table-title [title]="'model.menu.list'"></mb-table-title>
+<div class="row col-12 mt-3">
+  <!-- search -->
+  <nz-table>
+    <div [formGroup]="formSearchMenu">
+      <div class="row p-4">
+        <div class="col-6 mb-2">
+          <label>{{'model.menu.keyword.title' | translate}}</label>
+          <input type="text" formControlName="keyword" nz-input [maxLength]="LENGTH_VALIDATOR.NAME_MAX_LENGTH.MAX"
+            placeholder="{{ 'model.menu.keyword.input' | translate }}"
+            [placeholder]="'model.menu.keyword.input' | translate">
+        </div>
+        <div class="col-6 mb-2">
+          <label>{{'model.menu.type' | translate}}</label>
+          <nz-select formControlName="type" nzPlaceHolder="Menu Type" nzAllowClear="true">
+            <ng-container *ngFor="let type of types">
+              <nz-option [nzValue]="type.value" [nzLabel]="type.label | translate"></nz-option>
+            </ng-container>
+          </nz-select>
+        </div>
+        <div class="col-6 mb-2">
+          <label>{{'model.menu.publishStatus' | translate}}</label>
+          <div class="ms-1">
+            <nz-select formControlName="published" nzPlaceHolder="Trạng thái menu" nzAllowClear="true">
+              <ng-container *ngFor="let status of publishStatus">
+                <nz-option [nzValue]="status.value" [nzLabel]="status.label | translate"></nz-option>
+              </ng-container>
+            </nz-select>
+          </div>
+        </div>
+        <div class="col-6 mb-2">
+          <label>{{'model.menu.closedAt' | translate}}</label>
+          <app-date-range-picker [fromDate]="this.formSearchMenu?.get('startClosedAt')?.value"
+            [toDate]="this.formSearchMenu?.get('endClosedAt')?.value" (rangeDateChange)="onChangeCreatedDate($event)">
+          </app-date-range-picker>
+        </div>
+      </div>
+    </div>
+    <div class="row pb-3 text-center">
+      <div class="col-12">
+        <button class="me-3" nz-button nzType="default" (click)="resetSearch()">
+          {{ "action.reset" | translate }}
+        </button>
+        <button nz-button nzType="primary" (click)="search()">
+          {{ "common.search" | translate }}
+        </button>
+      </div>
+    </div>
+  </nz-table>
+  <!-- end-search -->
+  <div class="col-12 text-end mt-3">
+    <mb-button nz-button nz-dropdown [nzDropdownMenu]="dropMenu" [type]="'primary'" *hasRoles="['user:create']"
+      [icon]="'plus'" [text]="'action.create'" (click)="create()">
+    </mb-button>
+  </div>
+  <div class="col-12 mt-2">
+    <nz-table #table [nzData]="menus" (nzQueryParams)="onChangeQueryParams($event)" [nzNoResult]="noDataResult">
+      <thead>
+        <tr>
+          <th nzAlign="center" nzColumnKey="index">{{'common.index' | translate}}</th>
+          <th nzAlign="center" nzColumnKey="center" [nzSortFn]="true">{{'model.menu.code' | translate}}</th>
+          <th nzAlign="center" nzColumnKey="title" [nzSortFn]="true">{{'model.menu.title' | translate}}</th>
+          <th nzAlign="center" nzColumnKey="type" [nzSortFn]="true">{{'model.menu.type' | translate}}</th>
+          <th nzAlign="center" nzColumnKey="price" [nzSortFn]="true">{{'model.menu.price' | translate}}</th>
+          <th nzAlign="center" nzColumnKey="note">{{'model.menu.note' | translate}}</th>
+          <th nzAlign="center" nzColumnKey="published" [nzSortFn]="true">{{'model.menu.publishStatus' | translate}}</th>
+          <th nzAlign="center" nzColumnKey="closedAt" [nzSortFn]="true">{{'model.menu.closedAt' | translate}}</th>
+          <th nzAlign="center" nzColumnKey="isClosed">{{'model.menu.isClosed' | translate}}</th>
+          <th nzAlign="center" nzColumnKey="">{{'action.msg' | translate}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of menus; let i = index">
+          <tr>
+            <td nzAlign="center">{{ getIndex(i) }}</td>
+            <td nzAlign="center">{{ item.code }}</td>
+            <td nzAlign="left" [nzTooltipTitle]="item.title" [nzTooltipPlacement]="'top'" nz-tooltip>{{ item.title |
+              limitWord:25 }}</td>
+            <td nzAlign="center">{{ pipeType(item.type) | translate }}</td>
+            <td nzAlign="center">{{ item.price ? (item.price | vnd) : "-" }}</td>
+            <td nzAlign="left" [nzTooltipTitle]="item.note" [nzTooltipPlacement]="'top'" nz-tooltip>{{ item.note |
+              limitWord:25 }}</td>
+            <td nzAlign="center">
+              <img *ngIf="item.published" src="assets/images/button/correct.png" />
+            </td>
+            <td nzAlign="center">{{ item.closedAt | date:"dd-MM-YYYY HH:mm" }}</td>
+            <td nzAlign="center">
+              <img *ngIf="item.isClosed" src="assets/images/button/correct.png" />
+            </td>
+            <td nzAlign="right" class="action">
+              <mb-button-action *ngIf="!item.isClosed && item.published" [action]="'check-box'" className="first"
+                nzTooltipTitle="{{'model.menu.unpublish' | translate}}" nzTooltipPlacement="top" nz-tooltip
+                (click)="openUnpublishPopup(item)">
+              </mb-button-action>
+              <mb-button-action *ngIf="!item.isClosed && !item.published" [action]="'blank-check-box'" className="first"
+                nzTooltipTitle="{{'model.menu.publish' | translate}}" nzTooltipPlacement="top" nz-tooltip
+                (click)="openPublishPopup(item)">
+              </mb-button-action>
+              <mb-button-action [action]="'view'" className="center" nzTooltipTitle="{{'action.detail' | translate}}"
+                nzTooltipPlacement="top" nz-tooltip (click)="detail(item.id)">
+              </mb-button-action>
+              <mb-button-action [action]="'edit'" className="center" nzTooltipTitle="{{'action.update' | translate}}"
+                nzTooltipPlacement="top" nz-tooltip (click)="update(item.id)">
+              </mb-button-action>
+              <mb-button-action [action]="'delete'" [className]="'last'"
+                nzTooltipTitle="{{'action.delete' | translate}}" nzTooltipPlacement="top" nz-tooltip
+                (click)="delete(item)">
+              </mb-button-action>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </nz-table>
+    <mb-pagination [pageIndex]="menuSearchRequest.pageIndex" [pageSize]="menuSearchRequest.pageSize" [total]="total"
+      (onChange)="onQuerySearch($event)">
+    </mb-pagination>
+  </div>
+</div>
+<ng-template #noDataResult>
+  <mb-no-data></mb-no-data>
+</ng-template>
+<mb-modal [title]="publishPopup.title" [content]="publishPopup.content" [okText]="publishPopup.okText"
+  [btnCentered]="true" [isVisible]="isPubUnpubPopupVisible" (emitter)="onPubUnpubModalClosed($event)"
+  [interpolateParams]="publishPopup.interpolateParams">
+</mb-modal>

@@ -1,0 +1,111 @@
+<div class="content">
+  <mb-table-title
+    [showBack]="true"
+    [title]="'model.department.info'"
+  ></mb-table-title>
+  <section class="content">
+    <div class="row department_container">
+      <div class="col-lg-3 col-md-12 col-sm-12 p-2">
+        <div class="department_list_child department_block h-100">
+          <div class="department_title mb-3">
+            <div class="department_title_content">
+              {{ "model.department.structure" | translate }}
+            </div>
+          </div>
+  
+          <mb-tree-view
+            [columns]="3"
+            [data]="childDepartment"
+            (clickNode)="handleClickNode($event)"
+          ></mb-tree-view>
+        </div>
+      </div>
+      <div class="col-lg-9 col-md-12 col-sm-12 p-2">
+        <div class="department_info department_block mb-3">
+          <div class="department_title mb-3">
+            <div class="department_title_content">
+              {{ "model.department.description" | translate }}
+            </div>
+          </div>
+          <div class="departmnet_info_group">
+            <div class="departmnet_info_group_label">
+              {{ "model.department.code" | translate }}:
+            </div>
+            <div class="departmnet_info_group_content">
+              {{ departmentDetail.code }}
+            </div>
+          </div>
+          <div class="departmnet_info_group">
+            <div class="departmnet_info_group_label">
+              {{ "model.department.name" | translate }}:
+            </div>
+            <div class="departmnet_info_group_content">
+              {{ departmentDetail.name }}
+            </div>
+          </div>
+          <div class="departmnet_info_group">
+            <div class="departmnet_info_group_label">
+              {{ "model.department.description" | translate }}:
+            </div>
+            <div class="departmnet_info_group_content">
+              {{ departmentDetail.description }}
+            </div>
+          </div>
+  
+          <ng-container *ngFor="let item of departmentDetail.employmentHistories">
+            <div class="departmnet_info_group">
+              <div class="departmnet_info_group_label">
+                {{ getLabelTitle(item.title) | translate }}:
+              </div>
+              <div class="departmnet_info_group_content">{{ item.fullName }}</div>
+            </div>
+          </ng-container>
+        </div>
+        <div class="department_list_employee department_block">
+          <div class="row">
+            <div class="department_title mb-3">
+              <div class="department_title_content">
+                {{ "model.department.listEmpoyee" | translate }}
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-8 col-xs-12 d-flex">
+              <nz-input-group nzPrefixIcon="search">
+                <input
+                  type="text"
+                  nz-input
+                  (keyup.enter)="search($event)"
+                  [placeholder]="'action.search' | translate"
+                />
+              </nz-input-group>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-12">
+              <ng-container *ngIf="users.length > 0">
+                <mb-grid-view-employee [data]="users" [getResource]="getResource" [getLimitLength]="getLimitLength"></mb-grid-view-employee>
+              </ng-container>
+              <ng-container *ngIf="!users || users.length === 0">
+                <mb-no-data></mb-no-data>
+              </ng-container>
+              <mb-pagination
+                [pageIndex]="pageIndex"
+                [pageSize]="pageSize"
+                [pageSizeOptions]="pageSizeOptions"
+                [total]="total"
+                (onChange)="onQuerySearch($event)"
+              >
+              </mb-pagination>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+<mb-modal [btnCentered]="true"> </mb-modal>
+
+<ng-template #noDataResult>
+  <mb-no-data></mb-no-data>
+</ng-template>
+

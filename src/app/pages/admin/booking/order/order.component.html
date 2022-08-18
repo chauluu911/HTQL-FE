@@ -1,0 +1,128 @@
+<div class="content">
+  <mb-table-title [title]="'model.order.list' | translate"></mb-table-title>
+  <!-- search -->
+  <nz-table class="content mt-3">
+    <div [formGroup]="formSearchOrder">
+      <div class="row p-4">
+        <div class="col-4 mb-2">
+          <label>{{'model.order.type.root' | translate}}</label>
+          <nz-select [nzNotFoundContent]="noDataResult" formControlName="type"
+            nzPlaceHolder="{{'model.order.type.root' | translate}}">
+            <ng-container *ngFor="let type of types">
+              <nz-option [nzValue]="type.value" [nzLabel]="type.label | translate"></nz-option>
+            </ng-container>
+          </nz-select>
+        </div>
+        <div class="col-4 mb-2">
+          <label>{{'model.order.status.root' | translate}}</label>
+          <nz-select formControlName="status" nzPlaceHolder="{{'model.order.status.root' | translate}}"
+            nzAllowClear="true" nzShowSearch [nzNotFoundContent]="noDataResult">
+            <ng-container *ngFor="let status of orderStatus">
+              <nz-option [nzValue]="status.value" [nzLabel]="status.label | translate"></nz-option>
+            </ng-container>
+          </nz-select>
+        </div>
+        <div class="col-4 mb-2">
+          <label>{{'model.order.menuName' | translate }}</label>
+          <nz-select formControlName="menuId" nzPlaceHolder="{{'model.order.menuName' | translate }}"
+            nzAllowClear="true" nzShowSearch [nzNotFoundContent]="noDataResult">
+            <ng-container *ngFor="let menu of menus">
+              <nz-option [nzValue]="menu.id" [nzLabel]="menu.title"></nz-option>
+            </ng-container>
+          </nz-select>
+        </div>
+        <div *hasRoles="['user:view']" class="col-6 mb-2">
+          <label>{{'model.order.orderer' | translate }}</label>
+          <nz-select [nzNotFoundContent]="noDataResult" nzShowSearch nzServerSearch class="pr-1"
+            formControlName="userId" appDebounceKeyUp (onEvent)="searchUsers($event)"
+            nzPlaceHolder="{{ 'model.order.orderer' | translate }}">
+            <nz-option *ngFor="let user of users" [nzLabel]="user.fullName" [nzValue]="user.id"></nz-option>
+          </nz-select>
+        </div>
+        <!-- <div class="col-4 mb-2">
+          <label>{{'model.order.created.startCreatedAt' | translate}}</label>
+          <nz-date-picker formControlName="startCreatedAt" nzShowTime nzFormat="yyyy-MM-dd HH:mm"
+            nzPlaceHolder="{{'model.order.created.startCreatedAt' | translate}}" [nzShowTime]="{ nzFormat: 'HH:mm' }">
+          </nz-date-picker>
+        </div>
+        <div class="col-4 mb-2">
+          <label>{{'model.order.created.endCreatedAt' | translate}}</label>
+          <nz-date-picker formControlName="endCreatedAt" nzShowTime nzFormat="yyyy-MM-dd HH:mm"
+            nzPlaceHolder="{{'model.order.created.endCreatedAt' | translate}}" [nzShowTime]="{ nzFormat: 'HH:mm' }">
+          </nz-date-picker>
+        </div> -->
+        <div class="col-6 mb-2">
+          <label>{{'model.order.created.root' | translate}}</label>
+          <app-date-range-picker [fromDate]="this.formSearchOrder?.get('startCreatedAt')?.value"
+            [toDate]="this.formSearchOrder?.get('endCreatedAt')?.value" (rangeDateChange)="onChangeCreateDate($event)">
+          </app-date-range-picker>
+        </div>
+      </div>
+    </div>
+    <div class="row pb-3 text-center">
+      <div class="col-12">
+        <button class="me-3" nz-button nzType="default" (click)="resetSearch()">
+          {{ "action.reset" | translate }}
+        </button>
+        <button nz-button nzType="primary" (click)="search()">
+          {{ "common.search" | translate }}
+        </button>
+      </div>
+    </div>
+  </nz-table>
+  <!-- end-search -->
+  <div class="col-12 text-end mt-3">
+    <mb-button class="me-3" nz-button nz-dropdown [text]="'model.order.changeToPaid'" (click)="openPurchasePopup()">
+    </mb-button>
+    <mb-button nz-button nz-dropdown [icon]="'plus'" [text]="'action.create'" (click)="create()"></mb-button>
+  </div>
+
+  <div class="col-12 mt-2">
+    <nz-table #table [nzData]="orders" [nzNoResult]="noDataResult" (nzQueryParams)="onQuerySearch($event)">
+      <thead>
+        <tr>
+          <th nzAlign="center">{{'common.index' | translate}}</th>
+          <th nzAlign="center" nzColumnKey="code" [nzSortFn]="true">{{'model.order.code' | translate}}</th>
+          <th nzAlign="center">{{'model.order.orderer' | translate}}</th>
+          <th nzAlign="center">{{'model.order.createdAt' | translate}}</th>
+          <th nzAlign="center" nzColumnKey="totalPrice" [nzSortFn]="true">{{'model.order.totalPrice' | translate}}</th>
+          <th nzAlign="center" nzColumnKey="status" [nzSortFn]="true">{{'model.order.status.root' | translate}}</th>
+          <th nzAlign="center" nzColumnKey="type" [nzSortFn]="true">{{'model.order.type.root' | translate}}</th>
+          <th nzAlign="center">{{'action.msg' | translate}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of orders; let i = index">
+          <tr>
+            <td nzAlign="center">{{ getIndex(i) }}</td>
+            <td nzAlign="center">{{item.code}}</td>
+            <td nzAlign="center">{{item.createdUserFullName}}</td>
+            <td nzAlign="center">{{item.createdAt | date:"dd-MM-yyyy"}}</td>
+            <td nzAlign="center">{{item.totalPrice ? (item.totalPrice | vnd) : "-"}}</td>
+            <td nzAlign="center">
+              <mb-badge [color]="formatColor(item.status)" [text]="pipeStatus(item.status) | translate"></mb-badge>
+            </td>
+            <td nzAlign="center">{{pipeType(item.type) |translate}}</td>
+            <td nzAlign="center">
+              <mb-button-action [action]="'view'" className="first" nzTooltipTitle="{{'action.view' | translate}}"
+                nzTooltipPlacement="top" (click)="detail(item.id)">
+              </mb-button-action>
+              <mb-button-action [action]="'edit'" className="center" nzTooltipTitle="{{'action.update' | translate}}"
+                nzTooltipPlacement="top" (click)="update(item.id)">
+              </mb-button-action>
+              <mb-button-action [action]="'delete'" className="last" nzTooltipTitle="{{'action.delete' | translate}}"
+                nzTooltipPlacement="top" (click)="delete(item.id)">
+              </mb-button-action>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </nz-table>
+    <mb-pagination [pageIndex]="orderSearchRequest.pageIndex" [pageSize]="orderSearchRequest.pageSize" [total]="total"
+      (onChange)="onQuerySearch($event)">
+    </mb-pagination>
+  </div>
+</div>
+<ng-template #noDataResult>
+  <mb-no-data></mb-no-data>
+</ng-template>

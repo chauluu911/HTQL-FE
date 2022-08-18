@@ -1,0 +1,117 @@
+<div class="row">
+  <div class="col-8 title">
+    <mb-table-title [title]="'model.order.detail' | translate" showBack="true">
+    </mb-table-title>
+  </div>
+</div>
+<div class="row mt-3">
+  <div class="col-12">
+    <section *ngIf="order" class="content mt-3">
+      <div class="row mt-2">
+        <div class="col-4 mb-2">
+          <span><label>{{'model.order.type.root' | translate }}:&nbsp;</label>{{pipeOrderType(order?.type) |
+            translate}}</span>
+        </div>
+        <div class="col-4 mb-2">
+          <span><label>{{'model.order.menuName' | translate }}:&nbsp;</label>
+            <ng-container *ngIf="menu">{{menu.title}}</ng-container>
+          </span>
+        </div>
+        <div class="col-4 mb-2">
+          <span><label>{{'model.order.orderer' | translate }}:&nbsp;</label>{{order.createdUserFullName}}</span>
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <div class="col-4 mb-2">
+          <span><label>{{'model.order.owner' | translate }}:&nbsp;</label>{{order.ownerFullName}}</span>
+        </div>
+        <div class="col-4 mb-2">
+          <span><label>{{'model.order.totalPrice' | translate }}:&nbsp;</label>{{order.totalPrice ? (order.totalPrice |
+            vnd) : "-" }}</span>
+        </div>
+        <div class="col-4 mb-2">
+          <span><label>{{'model.order.createdAt' | translate }}:&nbsp;</label>{{order.createdAt |
+            date:"dd-MM-yyyy"}}</span>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <label>{{ 'model.menu.selectedProducts' | translate }}</label>
+        <nz-table #table [nzData]="purchaseOrderItems" (nzQueryParams)="onChangeSortProduct($event)">
+          <thead>
+            <tr>
+              <th nzAlign="center" nzColumnKey="index">{{'common.index' | translate}}</th>
+              <th nzAlign="center" nzColumnKey="productName" [nzSortFn]="true">{{'model.product.name' | translate}}</th>
+              <th nzAlign="center" nzColumnKey="quantity" [nzSortFn]="true">{{'model.order.productQuantity' |
+                translate}}
+              </th>
+              <th nzAlign="center" nzColumnKey="productPrice" [nzSortFn]="true">{{'model.product.price' | translate}}
+              </th>
+              <th nzAlign="center" nzColumnKey="pricePerProduct">{{'model.order.pricePerProduct' | translate}}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let item of purchaseOrderItems; let i = index">
+              <tr>
+                <td nzAlign="center">{{ getItemIndex(i) }}</td>
+                <td nzAlign="center">{{ item.productName }}</td>
+                <td nzAlign="center">{{ item.quantity }}</td>
+                <td *ngIf="item.productType !== PRODUCT_TYPE_STR.LUNCH" nzAlign="center">{{ item.productPrice ?
+                  (item.productPrice |
+                  vnd) : '-' }}</td>
+                <td nzAlign="center">{{ (item.quantity * item.productPrice) | vnd }}</td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </nz-table>
+        <mb-pagination [pageIndex]="purchaseOrderItemSearchRequest.pageIndex"
+          [pageSize]="purchaseOrderItemSearchRequest.pageSize" [total]="totalOrderItem"
+          (onChange)="onChangePaginationProduct($event)"></mb-pagination>
+      </div>
+      <div class="row mt-2">
+        <label>{{ 'model.order.history' | translate }}</label>
+        <nz-table #table [nzData]="purchaseOrderHistories" (nzQueryParams)="onChangeSortHistory($event)">
+          <thead>
+            <tr>
+              <th nzAlign="center" nzColumnKey="index">{{'common.index' | translate}}</th>
+              <th nzAlign="center" nzColumnKey="createdAt" [nzSortFn]="true">{{'model.order.lastModifiedAt' |
+                translate}}</th>
+              <th nzAlign="center" nzColumnKey="createdBy" [nzSortFn]="true">{{'model.order.lastModifiedBy' |
+                translate}}</th>
+              <th nzAlign="center" nzColumnKey="status" [nzSortFn]="true">{{'model.order.status.root' | translate}}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let item of purchaseOrderHistories; let i = index">
+              <tr>
+                <td nzAlign="center">{{ getHistoryIndex(i) }}</td>
+                <td nzAlign="center">{{ item.createdAt | date:"dd-MM-yyyy HH:mm" }}</td>
+                <td nzAlign="center">{{ item.createdUserFullName }}</td>
+                <td nzAlign="center">
+                  <mb-badge [text]="pipeStatus(item.status)" [color]="formatColor(item.status)"></mb-badge>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </nz-table>
+        <mb-pagination [pageIndex]="purchaseOrderHistoryRequest.pageIndex"
+          [pageSize]="purchaseOrderHistoryRequest.pageSize" [total]="totalOrderHistories"
+          (onChange)="onChangePaginationHistory($event)"></mb-pagination>
+      </div>
+    </section>
+  </div>
+</div>
+<section class="content mt-n3">
+  <div class="row mt-4">
+    <div class="col-12 text-center">
+      <button class="ms-3" nz-button nzType="default" (click)="onCancel()">
+        {{ 'action.back' | translate }}
+      </button>
+      <button class="ms-3" nz-button nzType="primary" (click)="navigateToUpdatePage()">
+        {{ 'action.update' | translate }}
+      </button>
+    </div>
+  </div>
+</section>

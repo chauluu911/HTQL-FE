@@ -1,0 +1,50 @@
+<div class="advanced-search">
+    <div *nzModalTitle>
+      <span>{{ "common.advancedSearch" | translate }}</span>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <form [formGroup]="form">
+          <div class="col-12 mb-2">
+            <label>{{ "model.department.byDate" | translate }}: </label>
+            <nz-date-picker
+              formControlName="createdAt"
+              [nzId]="'startPicker'"
+              (keyup.enter)="enterDatePicker($event, 'createdAt')"
+              [nzFormat]="'dd/MM/yyyy'"
+              (ngModelChange)="changeStartAt()"
+              #startPicker
+              nzPlaceHolder="{{ 'model.department.fromDate' | translate }}"
+            >
+            </nz-date-picker>
+          </div>
+  
+          <div class="col-12 mb-2">
+            <label></label>
+            <nz-date-picker
+              formControlName="lastModifiedAt"
+              (keyup.enter)="enterDatePicker($event, 'lastModifiedAt')"
+              [nzDisabledDate]="disabledBeforeStartAt"
+              [nzDefaultPickerValue]="createdAt"
+              [nzFormat]="'dd/MM/yyyy'"
+              #endPicker
+              nzPlaceHolder="{{ 'model.department.toDate' | translate }}"
+            >
+            </nz-date-picker>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-12 text-center" *nzModalFooter>
+      <button nz-button nzType="default" (click)="onCancel()">
+        {{ "action.reset" | translate }}
+      </button>
+      <button nz-button nzType="primary" (click)="onSubmit()">
+        {{ "common.search" | translate }}
+      </button>
+    </div>
+  </div>
+  

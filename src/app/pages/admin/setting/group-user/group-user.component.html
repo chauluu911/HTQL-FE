@@ -1,0 +1,138 @@
+<div class="content">
+  <div class="row title mb-3">
+    <mb-table-title [title]="'model.groupUser.list'"></mb-table-title>
+  </div>
+  <section class="content">
+    <div class="row mb-3">
+      <div class="col-lg-4 col-xl-4 col-md-5 col-sm-8 col-xs-12 d-flex">
+        <nz-input-userGroup
+          nzPrefixIcon="search"
+          *hasRoles="['group:view']"
+          style="width: 100%"
+        >
+          <input
+            type="text"
+            nz-input
+            [value]="keyword"
+            (keyup.enter)="search($event)"
+            [placeholder]="'model.groupUser.searchTitle' | translate"
+          />
+        </nz-input-userGroup>
+      </div>
+      <div class="col">
+        <mb-button
+          [type]="'primary'"
+          [icon]="'plus'"
+          *hasRoles="['user_group:create']"
+          [text]="'action.create'"
+          (click)="create()"
+        >
+        </mb-button>
+      </div>
+    </div>
+    <div class="row mb-3 group_user_grid">
+      <ng-container *ngIf="groupUsers.length > 0; else NoData">
+        <ng-container *ngFor="let userGroup of groupUsers; let i = index">
+          <div class="col-lg-3 mb-3">
+            <div class="group_user_item">
+              <div
+                class="group_user_item_header d-flex justify-content-between align-items-center mb-3 flex-wrap"
+              >
+                <div
+                  class="group_user_item_header_avatar d-flex align-items-center"
+                >
+                  <nz-avatar
+                    (click)="detail(userGroup)"
+                    class="avatar-none"
+                    [nzSize]="55"
+                    class="{{ i % 2 == 0 ? 'avatar-yellow' : 'avatar-gray' }}"
+                    [nzText]="getFirstLetter(userGroup.name)"
+                  ></nz-avatar>
+                  <div
+                    class="group_user_item_body_name poiter ms-3"
+                    (click)="detail(userGroup)"
+                  >
+                    {{ userGroup.name }}
+                  </div>
+                </div>
+
+                <div class="group_user_item_header_avatar_member">
+                  {{ userGroup?.totalMember ? userGroup.totalMember : 0 }}
+                  <span>{{ "model.groupUser.member" | translate }}</span>
+                </div>
+              </div>
+              <div class="group_user_item_body mb-3">
+                <div
+                  class="group_user_item_field d-flex justify-content-between align-items-center"
+                >
+                  <div class="group_user_item_body_label">
+                    {{ "model.groupUser.code" | translate }}:
+                  </div>
+                  <div class="group_user_item_body_code">
+                    {{ userGroup.code || "common.noInfo" | translate }}
+                  </div>
+                </div>
+                <div class="group_user_item_field">
+                  <div class="group_user_item_body_label">
+                    {{ "model.groupUser.description" | translate }}:
+                  </div>
+                  <div class="group_user_item_body_description">
+                    {{ userGroup.description || "common.noInfo" | translate }}
+                  </div>
+                </div>
+              </div>
+              <div class="group_user_item_bottom">
+                <div class="group_user_item_bottom_options">
+                  <div class="group_user_item_option">
+                    <button
+                      nz-button
+                      nzType="outline"
+                      *hasRoles="['user_group:update']"
+                      nzBlock
+                      class="mb-2"
+                      (click)="update(userGroup)"
+                    >
+                      <i nz-icon nzType="edit"></i>
+                      {{ "action.update" | translate }}
+                    </button>
+                    <button
+                      nz-button
+                      nzDanger
+                      *hasRoles="['user_group:update']"
+                      nzBlock
+                      class="danger"
+                      (click)="onConfirmRemoveGroup(userGroup)"
+                    >
+                      <i nz-icon nzType="delete"></i>
+                      {{ "action.delete" | translate }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+      <ng-template #NoData>
+        <mb-no-data></mb-no-data>
+      </ng-template>
+      <mb-pagination
+        [pageIndex]="pageIndex"
+        [pageSize]="pageSize"
+        [total]="total"
+        (onChange)="onQuerySearch($event)"
+        [pageSizeOptions]="pageSizeOptions"
+      >
+      </mb-pagination>
+    </div>
+  </section>
+</div>
+<mb-modal
+  [title]="groupDeletePopup.title"
+  [content]="groupDeletePopup.content"
+  [okText]="groupDeletePopup.okText"
+  [btnCentered]="true"
+  [isVisible]="isVisible"
+  (emitter)="onRemoveGroup($event)"
+>
+</mb-modal>

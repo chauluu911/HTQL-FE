@@ -1,0 +1,22 @@
+.nav-tabs .nav-link {
+    border: 0px solid #ffffff !important;
+    font-weight: bold;
+    color: rgba(173, 173, 173, 0.85);
+    position: relative;
+    right: 15px;
+}
+
+.nav-tabs .nav-link.active {
+    border-bottom: 2px solid #0054A5 !important;
+    color: #0054A5;
+    margin-left: 15px;
+}
+
+.tab-content {
+    margin-top: 40px;
+}
+
+.title1 {
+    margin-left: 20px;
+    font-weight: bold;
+}

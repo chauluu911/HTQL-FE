@@ -1,0 +1,79 @@
+<div class="content">
+  <div *nzModalTitle>
+    <span>{{this.title}}</span>
+  </div>
+  <form [formGroup]="form">
+    <div class="row">
+      <div class="col">
+        <label>{{ this.getTranslate('clientName') }} <span class="text-danger">*</span></label>
+        <input formControlName="name" nz-input
+               [maxLength]="LENGTH_VALIDATOR.NAME_MAX_LENGTH.MAX"
+               placeholder="{{ this.getTranslate('clientName', 'INPUT') }}">
+      </div>
+      <mb-validate-message [errorMessages]="this.validateMessages" [fieldName]="'name'" [form]="this.form">
+      </mb-validate-message>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col">
+        <label>{{ this.getTranslate('role')}} <span class="text-danger">*</span></label>
+        <nz-select formControlName="roleId" appRemoveOptionTitle
+                   nzShowSearch
+                   nzServerSearch
+                   appDebounceKeyUp
+                   (onEvent)="this.searchRoles($event)"
+                   nzPlaceHolder="{{ this.getTranslate('role', 'SELECT') }}">
+          <nz-option *ngFor="let role of roles" [nzLabel]="role.name | translate"
+                     [nzValue]="role?.id" [nzCustomContent]="true">
+            <div container="body" [animation]="false" [openDelay]="100" [closeDelay]="0"
+                 [ngbTooltip]="(role?.name!) | translate">{{(role?.name!) | translate}}</div>
+          </nz-option>
+        </nz-select>
+        <mb-validate-message [errorMessages]="this.validateMessages" [fieldName]="'roleId'" [form]="this.form">
+        </mb-validate-message>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col">
+        <label>{{ 'common.status' | translate }} <span class="text-danger">*</span></label>
+        <nz-select formControlName="status"
+                   nzPlaceHolder="{{ 'model.user.service.selectStatus' | translate }}">
+          <nz-option *ngFor="let service of userStatus" [nzLabel]="service.label | translate"
+                     [nzValue]="service.value" [nzCustomContent]="true">
+            <div container="body" [animation]="false" [openDelay]="100" [closeDelay]="0"
+                 [ngbTooltip]="(service?.label!) | translate">{{(service?.label!) | translate}}</div>
+          </nz-option>
+        </nz-select>
+        <mb-validate-message [errorMessages]="this.validateMessages" [fieldName]="'status'" [form]="this.form">
+        </mb-validate-message>
+      </div>
+    </div>
+    <div class="row mt-2" *ngIf="client?.secretToken">
+      <label>Token:</label>
+      <div class="col">
+        <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+          <input type="text" nz-input disabled [value]="client?.secretToken"/>
+        </nz-input-group>
+        <ng-template #suffixIconButton>
+          <button (click)="copy()" class="btn " style="border: solid 1px #0054A5" nzShape="circle">
+            <i nz-icon
+               nzType="copy"></i>
+          </button>
+        </ng-template>
+      </div>
+    </div>
+  </form>
+
+  <div class="row mt-2">
+    <div class="col-12 text-center" *nzModalFooter>
+      <button nz-button nzType="default" class="e-2" (click)="onCancel()">
+        {{ 'action.cancel' | translate }}
+      </button>
+      <button nz-button nzType="primary"
+              [disabled]="this.form.invalid || this.loading || this.createSuccess"
+              (click)="onSubmit()">
+        {{ 'action.save' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

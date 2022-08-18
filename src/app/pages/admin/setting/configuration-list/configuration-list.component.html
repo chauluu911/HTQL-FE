@@ -1,0 +1,295 @@
+<div class="content">
+  <mb-table-title [title]="this.translatePath + 'list'"></mb-table-title>
+  <nz-table class="content mt-3">
+    <div class="filter-element" [formGroup]="formSearch">
+      <div class="row p-4">
+        <div class="col-3">
+          <label>{{ getTranslate("keyword") }}</label>
+          <input
+            type="text"
+            nz-input
+            formControlName="keyword"
+            appTrim
+            (keyup.enter)="this.onSearchForm()"
+            [placeholder]="getTranslate('inputKeyword')"
+          />
+        </div>
+        <div class="col-3">
+          <label>{{ getTranslate("type") }}</label>
+          <nz-select
+            [nzShowArrow]="true"
+            nzShowSearch
+            appRemoveOptionTitle
+            nzAllowClear
+            formControlName="types"
+            nzMode="multiple"
+            [nzMaxTagCount]="2"
+            nzPlaceHolder="{{ getTranslate('type') }}"
+          >
+            <nz-option
+              [nzCustomContent]="true"
+              *ngFor="let type of CONFIGURATION_TYPES"
+              [nzLabel]="type.label | translate"
+              [nzValue]="type.value"
+            >
+              <div
+                container="body"
+                [animation]="false"
+                [openDelay]="100"
+                [closeDelay]="0"
+                [ngbTooltip]="type.label | translate"
+              >
+                {{ type.label! | translate }}
+              </div>
+            </nz-option>
+          </nz-select>
+        </div>
+        <div class="col-3">
+          <label>{{ getTranslate("createdAt") }}</label>
+          <app-date-range-picker
+            [fromDate]="this.formSearch?.get('createAtFrom')?.value"
+            [toDate]="this.formSearch?.get('createAtTo')?.value"
+            (rangeDateChange)="this.onChangeDate($event)"
+          >
+          </app-date-range-picker>
+        </div>
+        <div class="col-3">
+          <label>{{ getTranslate("createdBy") }}</label>
+          <nz-select
+            [nzShowArrow]="true"
+            nzServerSearch
+            appRemoveOptionTitle
+            nzShowSearch
+            appDebounceKeyUp
+            (nzFocus)="userSearch('')"
+            (onEvent)="this.userSearch($event?.target?.value)"
+            nzAllowClear
+            nzMode="multiple"
+            [nzMaxTagCount]="1"
+            formControlName="createdUserIds"
+            nzPlaceHolder="{{ getTranslate('createdBy') }}"
+          >
+            <nz-option
+              [nzCustomContent]="true"
+              *ngFor="let item of users"
+              [nzLabel]="item.fullName!"
+              [nzValue]="item.id"
+            >
+              <div
+                container="body"
+                [animation]="false"
+                [openDelay]="100"
+                [closeDelay]="0"
+                [ngbTooltip]="item.fullName!"
+              >
+                {{ item.fullName! }}
+              </div>
+            </nz-option>
+          </nz-select>
+        </div>
+        <div class="col-3 mt-2">
+          <label>{{ getTranslate("status") }}</label>
+          <nz-select
+            [nzShowArrow]="true"
+            nzShowSearch
+            appRemoveOptionTitle
+            nzAllowClear
+            formControlName="status"
+            nzPlaceHolder="{{ getTranslate('status') }}"
+          >
+            <nz-option
+              [nzCustomContent]="true"
+              *ngFor="let status of CONFIGURATION_STATUSES"
+              [nzLabel]="status.label | translate"
+              [nzValue]="status.value"
+            >
+              <div
+                container="body"
+                [animation]="false"
+                [openDelay]="100"
+                [closeDelay]="0"
+                [ngbTooltip]="status.label | translate"
+              >
+                {{ status.label! | translate }}
+              </div>
+            </nz-option>
+          </nz-select>
+        </div>
+      </div>
+      <div class="row mt-2 mb-3 text-center">
+        <div class="col-12">
+          <button
+            class="me-3"
+            nz-button
+            nzType="default"
+            (click)="onClearSearchForm()"
+          >
+            {{ "action.reset" | translate }}
+          </button>
+          <button nz-button nzType="primary" (click)="onSearchForm()">
+            {{ "common.search" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </nz-table>
+  <div class="row mt-3">
+    <div class="col text-end" *hasRoles="['survey:create']">
+      <mb-button
+        [type]="'primary'"
+        [icon]="'plus'"
+        [text]="'action.create'"
+        *hasRoles="['configuration:create']"
+        (click)="openCreate()"
+      >
+      </mb-button>
+    </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col-12">
+      <nz-table
+        #table
+        [nzData]="parameters"
+        [nzNoResult]="noDataResult"
+        [nzTableLayout]="'auto'"
+        (nzQueryParams)="onQueryParamsChange($event)"
+      >
+        <thead>
+          <tr>
+            <th nzAlign="center">{{ "common.index" | translate }}</th>
+            <th nzAlign="center" nzColumnKey="code">
+              {{ getTranslate("code") }}
+            </th>
+            <th nzAlign="center" nzColumnKey="name">
+              {{ getTranslate("name") }}
+            </th>
+            <th nzAlign="center" nzColumnKey="createBy">
+              {{ getTranslate("type") }}
+            </th>
+            <th nzAlign="center" nzColumnKey="department">
+              {{ getTranslate("value") }}
+            </th>
+            <th nzAlign="center" nzColumnKey="createDate">
+              {{ getTranslate("createdBy") }}
+            </th>
+            <th nzAlign="center" nzColumnKey="createDate">
+              {{ getTranslate("createdAt") }}
+            </th>
+            <th nzAlign="center" nzColumnKey="status">
+              {{ getTranslate("status") }}
+            </th>
+            <th nzAlign="center">{{ "action.msg" | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of parameters; let i = index">
+            <tr>
+              <td nzAlign="center">{{ getIndex(i) }}</td>
+
+              <td
+                nzAlign="left"
+                nz-tooltip="{{ item.code }}"
+                [nzTooltipPlacement]="['topLeft', 'leftTop']"
+              >
+                {{ getLimitLength(item.code!, 100) }}
+              </td>
+              <td
+                nzAlign="left"
+                nz-tooltip="{{ item.name }}"
+                [nzTooltipPlacement]="['topLeft', 'leftTop']"
+              >
+                {{ getLimitLength(item.name!, 100) }}
+              </td>
+              <td
+                nzAlign="left"
+                nz-tooltip="{{ this.getConfigurationType(item.type || '') }}"
+                [nzTooltipPlacement]="['topLeft', 'leftTop']"
+              >
+                {{ this.getConfigurationType(item.type || "") }}
+              </td>
+              <td
+                nzAlign="left"
+                nz-tooltip="{{ item.value }}"
+                [nzTooltipPlacement]="['topLeft', 'leftTop']"
+              >
+                {{ getLimitLength(item.value!, 100) }}
+              </td>
+              <td
+                nzAlign="left"
+                nz-tooltip="{{ item.createdByName }}"
+                [nzTooltipPlacement]="['topLeft', 'leftTop']"
+              >
+                {{ getLimitLength(item.createdByName!, 100) }}
+              </td>
+              <td nzAlign="center">
+                {{ getStartOfDay(item.createdAt || 0) | date: "dd/MM/yyyy" }}
+              </td>
+              <td nzAlign="center">
+                <mb-badge
+                  [hover]="false"
+                  [color]="getColorByStatus(item)"
+                  [text]="getStatus(item)"
+                >
+                </mb-badge>
+              </td>
+              <td nzAlign="center" class="d-flex">
+                <!--                      <mb-button-action [action]="'view'" *ngIf="!showBtnSend(item)"-->
+                <!--                                        nzTooltipTitle="{{'action.detail' | translate}}"-->
+                <!--                                        nzTooltipPlacement="top"-->
+                <!--                                        nz-tooltip-->
+                <!--                                        (click)="detail(item)">-->
+                <!--                      </mb-button-action>-->
+                <mb-button-action
+                  [action]="'edit'"
+                  className="first"
+                  nzTooltipTitle="{{ 'action.update' | translate }}"
+                  nzTooltipPlacement="top"
+                  nz-tooltip
+                  *hasRoles="['configuration:update']"
+                  (click)="openEdit(item)"
+                >
+                </mb-button-action>
+                <mb-button-action
+                  [action]="item.status === 'ACTIVE' ? 'lock' : 'unlock'"
+                  className="last"
+                  nzTooltipTitle="{{
+                    (item.status === 'ACTIVE' ? 'action.lock' : 'action.unlock')
+                      | translate
+                  }}"
+                  nzTooltipPlacement="top"
+                  *hasRoles="['configuration:update']"
+                  nz-tooltip
+                  (click)="this.openConfirmChangeStatus(item)"
+                >
+                  >
+                </mb-button-action>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </nz-table>
+      <mb-pagination
+        [pageIndex]="this.searchRequest.pageIndex || 1"
+        [pageSize]="this.searchRequest.pageSize || 10"
+        [total]="total"
+        (onChange)="onQuerySearch($event)"
+      >
+      </mb-pagination>
+    </div>
+  </div>
+</div>
+
+<ng-template #noDataResult>
+  <mb-no-data></mb-no-data>
+</ng-template>
+
+<mb-modal
+  [title]="groupPopup.title"
+  [content]="groupPopup.content"
+  [okText]="groupPopup.okText"
+  [btnCentered]="true"
+  [isVisible]="isVisible"
+  [callBack]="this.groupPopup.callBack"
+  (emitter)="handleConfirmInvalidBuilding($event)"
+>
+</mb-modal>

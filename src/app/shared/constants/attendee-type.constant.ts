@@ -1,0 +1,4 @@
+export const ATTENDEE_TYPE = {
+    REQUIRED : 'REQUIRED',
+    OPTIONAL : 'OPTIONAL'
+}

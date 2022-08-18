@@ -1,0 +1,172 @@
+<div class="content">
+  <div *nzModalTitle>
+    <span>{{
+      (isAddMember
+        ? "action.add"
+        : isUpdate
+        ? "action.update"
+        : "action.create"
+      ) | translate
+    }}</span>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <form nz-form [formGroup]="form" class="row" [nzLayout]="'vertical'">
+        <ng-container *ngIf="!isAddMember">
+          <nz-form-item class="mb-3">
+            <nz-form-label>
+              {{ "model.groupUser.code" | translate }}
+              <span class="text-danger">*</span>:
+            </nz-form-label>
+            <nz-form-control>
+              <input
+                formControlName="code"
+                nz-input
+                [disabled]="isUpdate"
+                [maxLength]="LENGTH_VALIDATOR.CODE_MAX_LENGTH.MAX"
+                placeholder="{{
+                  'model.groupUser.enterGroupUserCode' | translate
+                }}"
+              />
+              <ng-container
+                *ngIf="form.get('code')?.touched || form.get('code')?.dirty"
+              >
+                <span
+                  class="text-danger"
+                  *ngIf="form.get('code')?.hasError('required')"
+                >
+                  <mb-not-blank [value]="'model.groupUser.code'"></mb-not-blank>
+                </span>
+              </ng-container>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item class="mb-3">
+            <nz-form-label>
+              {{ "model.groupUser.name" | translate }}
+              <span class="text-danger">*</span>:
+            </nz-form-label>
+            <nz-form-control>
+              <input
+                formControlName="name"
+                nz-input
+                [maxLength]="LENGTH_VALIDATOR.CODE_MAX_LENGTH.MAX"
+                placeholder="{{
+                  'model.groupUser.enterGroupUserName' | translate
+                }}"
+              />
+              <ng-container
+                *ngIf="form.get('name')?.touched || form.get('name')?.dirty"
+              >
+                <span
+                  class="text-danger"
+                  *ngIf="form.get('name')?.hasError('required')"
+                >
+                  <mb-not-blank [value]="'model.groupUser.name'"></mb-not-blank>
+                </span>
+              </ng-container>
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item class="mb-3">
+            <nz-form-label>
+              {{ "model.groupUser.description" | translate }}:
+            </nz-form-label>
+            <nz-form-control>
+              <textarea
+                rows="4"
+                placeholder="{{
+                  'model.groupUser.enterGroupUserDes' | translate
+                }}"
+                formControlName="description"
+                nz-input
+              >
+              </textarea>
+              <ng-container
+                *ngIf="
+                  form.get('description')?.touched ||
+                  form.get('description')?.dirty
+                "
+              >
+                <span
+                  class="text-danger"
+                  *ngIf="form.get('description')?.hasError('required')"
+                >
+                  <mb-not-blank
+                    [value]="'model.groupUser.description'"
+                  ></mb-not-blank>
+                </span>
+              </ng-container>
+            </nz-form-control>
+          </nz-form-item>
+        </ng-container>
+        <nz-form-item class="mb-3">
+          <nz-form-label
+            >{{ "model.groupUser.selectMember" | translate }}
+          </nz-form-label>
+          <nz-form-control>
+            <nz-select
+              nzMode="tags"
+              nzShowSearch
+              nzAllowClear
+              [nzDropdownRender]="renderUserTemplate"
+              class="pr-1"
+              nzMode="multiple"
+              [nzMaxTagCount]="5"
+              formControlName="userMemberIds"
+              removeOptionTitle
+              [nzShowArrow]="true"
+              appDebounceKeyUp
+              (onEvent)="searchUser($event)"
+              nzServerSearch
+              [nzMaxTagPlaceholder]="maxTagPlaceHolder"
+              nzPlaceHolder="{{ 'model.groupUser.selectMember' | translate }}"
+            >
+              <nz-option
+                *ngFor="let user of users"
+                [nzCustomContent]="true"
+                [nzValue]="user?.id"
+                [nzLabel]="getLimitLength(user.fullName!, 30)"
+              >
+                <div
+                  container="body"
+                  [animation]="false"
+                  [openDelay]="100"
+                  [closeDelay]="0"
+                  [ngbTooltip]="user?.fullName"
+                >
+                  {{ user?.fullName }}
+                </div>
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12 text-center" *nzModalFooter>
+    <button nz-button nzType="default" class="e-2" (click)="onCancel()">
+      {{ "action.cancel" | translate }}
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      [disabled]="form.invalid"
+      (click)="onSubmit()"
+    >
+      {{ (isUpdate ? "action.save" : "action.save") | translate }}
+    </button>
+  </div>
+</div>
+<ng-template #renderUserTemplate>
+  <mb-select-all
+    *ngIf="users.length > 0"
+    (click)="selectAll('userMemberIds', users)"
+  >
+  </mb-select-all>
+</ng-template>
+<ng-template #maxTagPlaceHolder let-selectedList
+  >and {{ selectedList.length }} more selected</ng-template
+>

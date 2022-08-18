@@ -1,0 +1,145 @@
+<section class="content">
+    <div *nzModalTitle>
+        <span>{{
+        (isUpdate ? "action.update" : "action.create") | translate
+      }}</span>
+    </div>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-customer" role="tabpanel" aria-labelledby="nav-customer-tab">
+            <div class="row" [formGroup]="form">
+                <div class="col-6 mb-1 pl-5">
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label>{{ "model.asset.name" | translate }}
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input formControlName="name" nz-input [maxLength]="LENGTH_VALIDATOR.NAME_MAX_LENGTH.MAX" placeholder="{{
+                                'model.asset.name' | translate
+                            }}" />
+                            <ng-container *ngIf="form.get('name')?.value || form.get('name')?.dirty">
+                                <span class="text-danger" *ngIf="form.get('name')?.hasError('required')">
+                                <mb-not-blank
+                                [value]="'model.asset.name'"
+                                ></mb-not-blank>
+                            </span>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label>{{ "model.asset.description" | translate }}
+                            </label>
+                            <input formControlName="description" nz-input [maxLength]="LENGTH_VALIDATOR.LABEL_MAX_LENGTH.MAX" placeholder="{{
+                                'model.asset.description' | translate
+                            }}" />
+                            <ng-container *ngIf="form.get('description')?.value || form.get('description')?.dirty">
+                            </ng-container>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label>{{ "model.asset.status" | translate }} 
+                                <span class="text-danger">*</span>
+                            </label>
+                            <br />
+                            <nz-select formControlName="status" nzAllowClear removeOptionTitle nzPlaceHolder="{{
+                                  'model.asset.selectStatus' | translate
+                            }}">
+                                <nz-option *ngFor="let temp of assetStatus" [nzLabel]="temp.label | translate" [nzValue]="temp.value" [nzCustomContent]="true">
+                                    <div container="body" [animation]="false" [openDelay]="100" [closeDelay]="0" [ngbTooltip]="temp?.label! | translate">
+                                        {{ temp?.label! | translate }}
+                                    </div>
+                                </nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label>{{ "model.asset.serialNumber" | translate }}
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input formControlName="serialNumber" nz-input [maxLength]="LENGTH_VALIDATOR.ID_MAX_LENGTH.MAX" placeholder="{{
+                                'model.asset.serialNumber' | translate
+                            }}" />
+                            <ng-container *ngIf="form.get('serialNumber')?.value || form.get('serialNumber')?.dirty">
+                                <span class="text-danger" *ngIf="form.get('serialNumber')?.hasError('required')">
+                                <mb-not-blank
+                                [value]="'model.asset.serialNumber'"
+                                ></mb-not-blank>
+                            </span>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-1 pl-5">
+                    <!-- <div class="row mb-2">
+                        <div class="col-12">
+                            <label>{{ "model.asset.assetTypeId" | translate }}
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input formControlName="assetTypeId" nz-input [maxLength]="LENGTH_VALIDATOR.ID_MAX_LENGTH.MAX" placeholder="{{
+                                'model.asset.assetTypeId' | translate
+                            }}" />
+                            <ng-container *ngIf="form.get('assetTypeId')?.value || form.get('assetTypeId')?.dirty">
+                                <span class="text-danger" *ngIf="form.get('assetTypeId')?.hasError('required')">
+                                <mb-not-blank
+                                [value]="'model.asset.assetTypeId'"
+                                ></mb-not-blank>
+                            </span>
+                            </ng-container>
+                        </div>
+                    </div> -->
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label>{{ "model.asset.assetType" | translate }}</label>
+                            <nz-select nzShowSearch nzAllowClear appDebounceKeyUp removeOptionTitle formControlName="assetTypeId" (onEvent)="searchAssetType()" nzServerSearch nzPlaceHolder="{{
+                                'model.asset.assetType' | translate}}">
+                                <nz-option *ngFor="let asset of listAssetTypes" [nzCustomContent]="true" [nzValue]="asset?.id" [nzLabel]="asset?.name">
+                                    <div container="body" [animation]="false" [openDelay]="100" [closeDelay]="0" [ngbTooltip]="asset?.name!">
+                                        {{ asset?.name }}
+                                    </div>
+                                </nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label>{{ "model.asset.product" | translate }}</label>
+                            <nz-select nzShowSearch nzAllowClear appDebounceKeyUp removeOptionTitle formControlName="productId" [disabled]="isUpdate" (onEvent)="searchProduct()" nzServerSearch nzPlaceHolder="{{
+                                'model.asset.product' | translate}}">
+                                <nz-option *ngFor="let products of listProducts" [nzCustomContent]="true" [nzValue]="products?.id" [nzLabel]="products?.name">
+                                    <div container="body" [animation]="false" [openDelay]="100" [closeDelay]="0" [ngbTooltip]="products?.name!">
+                                        {{ products?.name }}
+                                    </div>
+                                </nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label>{{ "model.asset.user" | translate }}</label>
+                            <nz-select nzShowSearch nzAllowClear appDebounceKeyUp removeOptionTitle formControlName="ownerId" [disabled]="isUpdate" (onEvent)="searchUser()" nzServerSearch nzPlaceHolder="{{
+                                'model.asset.user' | translate}}">
+                                <nz-option *ngFor="let users of listUsers" [nzCustomContent]="true" [nzValue]="users?.id" [nzLabel]="users?.username">
+                                    <div container="body" [animation]="false" [openDelay]="100" [closeDelay]="0" [ngbTooltip]="users?.username!">
+                                        {{ users?.username }}
+                                    </div>
+                                </nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="row">
+    <div class="col-12 text-center" *nzModalFooter>
+        <button nz-button nzType="default" class="e-2" (click)="onCancel()">
+        {{ "action.cancel" | translate }}
+      </button>
+        <button nz-button nzType="primary" [disabled]="form.invalid" (click)="onSubmit()">
+        {{ (isUpdate ? "action.update" : "action.create") | translate }}
+      </button>
+    </div>
+</div>

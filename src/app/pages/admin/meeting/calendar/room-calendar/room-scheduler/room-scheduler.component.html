@@ -1,0 +1,46 @@
+<div class="content">
+    <div *nzModalTitle>
+        <span>{{ getTranslate('title') }}</span>
+    </div>
+    <div class="row mb-2">
+        <div class="col-lg-4">
+            <label>{{ getTranslate('meetingTitle') }}:</label>
+        </div>
+        <div class="col-lg-8">
+            <span>
+                <p>{{ roomSchedulerResponse.title ? roomSchedulerResponse.title : ('common.noInfo' | translate) }}</p>
+            </span>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-lg-4">
+            <label>{{ getTranslate('meetingTime')}}:</label>
+        </div>
+        <div class="col-lg-8">
+            <span>
+                <p>{{ roomSchedulerResponse.startAt | date: 'EEEE, MMMM d, y h:mm a'}} - {{
+                    roomSchedulerResponse.finishAt |
+                    date: 'h:mm a'}}
+                </p>
+            </span>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-lg-4">
+            <label>{{ getTranslate('organizerName') }}:</label>
+        </div>
+        <div class="col-lg-8">
+            <span>
+                <p>{{ roomSchedulerResponse.organizerName ? roomSchedulerResponse.organizerName : ('common.noInfo' |
+                    translate) }}</p>
+            </span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 text-center" *nzModalFooter>
+            <button nz-button nzType="default" class="mr-2" (click)="onCancel()">
+                {{ 'action.close' | translate }}
+            </button>
+        </div>
+    </div>
+</div>

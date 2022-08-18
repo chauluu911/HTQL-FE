@@ -1,0 +1,29 @@
+<div class="content">
+    <div class="row title mb-3">
+        <mb-table-title [title]="'model.employee.listTitle'"></mb-table-title>
+    </div>
+
+    <section class="content">
+        <div class="row  mb-3">
+            <div class="col-lg-3 col-xl-3 col-md-5 col-sm-8 col-xs-12 col d-flex ">
+                <nz-input-group nzPrefixIcon="search" *hasRoles="['user:view']">
+                    <input type="text" nz-input [value]="keyword" (keyup.enter)="search($event)" [placeholder]="'action.search' | translate" />
+                </nz-input-group>
+            </div>
+        </div>
+        <div class="row ">
+            <div (resized)="onResized($event)" class="col-12">
+                <div class="row list_employee_content">
+                    <ng-container *ngIf="employees.length > 0">
+                        <mb-grid-view-employee [columns]="3" [data]="employees" [getResource]="getResource" [getLimitLength]="getLimitLength"></mb-grid-view-employee>
+                    </ng-container>
+                    <ng-container *ngIf="!employees || employees.length === 0">
+                        <mb-no-data></mb-no-data>
+                    </ng-container>
+                </div>
+                <mb-pagination [pageIndex]="pageIndex" [pageSize]="pageSize" [total]="total" (onChange)="onQuerySearch($event)" [pageSizeOptions]="pageSizeOptions">
+                </mb-pagination>
+            </div>
+        </div>
+    </section>
+</div>

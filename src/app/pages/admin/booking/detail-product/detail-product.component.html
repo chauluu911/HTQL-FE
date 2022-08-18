@@ -1,0 +1,58 @@
+<div class="content">
+  <div *nzModalTitle>
+    <span>{{'action.detail' | translate }}</span>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="row">
+        <div class="col-6 mb-2">
+          <span><label>{{ 'model.product.name' | translate }}:&nbsp;</label>{{ product.name }}</span>
+        </div>
+        <div class="col-6 mb-2">
+          <span><label>{{ 'model.product.code' | translate }}:&nbsp;</label>{{ product.code }}</span>
+        </div>
+        <div class="col-6 mb-2">
+          <span><label>{{ 'model.product.type' | translate}}:&nbsp;</label>{{ product.type ? (pipeType(product.type) |
+            translate) : '-'}}</span>
+        </div>
+        <div class="col-6 mb-2">
+          <span><label>{{ 'model.product.subType' | translate
+              }}:&nbsp;</label>{{ product.subType ? (pipeSubType(product.subType) | translate) : '-'}}</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 mb-2">
+          <span>
+            <label>{{ 'model.product.price' | translate}}:&nbsp;</label>
+            {{product.price ? (product.price | vnd) : "-"}}
+          </span>
+        </div>
+        <div class="col-6 mb-2">
+          <span>
+            <label>{{ 'model.product.createdAt' | translate}}:&nbsp;</label>
+            {{product.createdAt ? (product.createdAt | date:"dd-MM-yyyy HH:mm") : "-"}}
+          </span>
+        </div>
+      </div>
+      <div class="rơw">
+        <div class="col-12">
+          <label>{{ 'model.product.image' | translate}}:&nbsp;</label>
+        </div>
+        <div class="col-12 mb-2">
+          <!-- <img style="max-width: 100%; max-height: 100%; height: auto;" nz-image [nzSrc]="product.imageUrl" alt="" /> -->
+          <app-upload-image [customSizeImg]="false" [displayButton]="false" [imageId]="product.imageId"
+            [alternateImageUrl]="alternateImg" className=" image" nzTooltipPlacement="top" nz-tooltip>
+          </app-upload-image>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 text-center" *nzModalFooter>
+      <button nz-button nzType="default" (click)="onCancel()">
+        {{ 'action.back' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

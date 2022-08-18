@@ -1,0 +1,211 @@
+<div class="content">
+  <mb-table-title
+    [showBack]="true"
+    [title]="'model.groupUser.detail'"
+  ></mb-table-title>
+  <section class="content mt-3">
+    <div class="row groupUser_container">
+      <div class="col-12 p-2">
+        <div class="groupUser_info groupUser_block mb-3">
+          <div class="groupUser_title mb-3">
+            <div class="groupUser_title_content">
+              {{ "model.groupUser.info" | translate }}
+            </div>
+          </div>
+          <div class="groupUser_info_group mb-3">
+            <div class="groupUser_info_group_label">
+              {{ "model.groupUser.name" | translate }}:
+            </div>
+            <div class="groupUser_info_group_content">
+              {{ groupUserDetail.name || "common.noInfo" | translate }}
+            </div>
+          </div>
+          <div class="groupUser_info_group mb-3">
+            <div class="groupUser_info_group_label">
+              {{ "model.groupUser.code" | translate }}:
+            </div>
+            <div class="groupUser_info_group_content">
+              {{ groupUserDetail.code || "common.noInfo" | translate }}
+            </div>
+          </div>
+          <div class="groupUser_info_group">
+            <div class="groupUser_info_group_label">
+              {{ "model.groupUser.description" | translate }}:
+            </div>
+            <div class="groupUser_info_group_content">
+              {{ groupUserDetail.description || "common.noInfo" | translate }}
+            </div>
+          </div>
+        </div>
+        <div class="groupUser_list_member groupUser_block">
+          <div class="row">
+            <div class="col-12 groupUser_title mb-3">
+              <div class="groupUser_title_content">
+                {{ "model.groupUser.members" | translate }}
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-8 col-xs-12 d-flex">
+              <nz-input-userGroup nzPrefixIcon="search" style="width: 100%">
+                <input
+                  type="text"
+                  nz-input
+                  (keyup.enter)="search($event)"
+                  [placeholder]="'action.search' | translate"
+                />
+              </nz-input-userGroup>
+            </div>
+            <div class="col ms-3">
+              <mb-button
+                [type]="'primary'"
+                [icon]="'plus'"
+                *hasRoles="['user_group:update']"
+                [text]="'action.add'"
+                (click)="addMemberToGroup()"
+              >
+              </mb-button>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-12">
+              <ng-container *ngIf="members.length > 0">
+                <nz-table
+                  #table
+                  [nzData]="members"
+                  [nzNoResult]="noDataResult"
+                  [nzTableLayout]="'auto'"
+                  (nzQueryParams)="onQueryParamsChange($event)"
+                >
+                  <thead>
+                    <tr>
+                      <th nzAlign="center">{{ "common.index" | translate }}</th>
+                      <th
+                        nzAlign="left"
+                        nzColumnKey="fullName"
+                        [nzSortFn]="true"
+                      >
+                        {{ "model.user.fullName" | translate }}
+                      </th>
+                      <th
+                        nzAlign="left"
+                        nzColumnKey="username"
+                        [nzSortFn]="true"
+                      >
+                        {{ "model.user.username" | translate }}
+                      </th>
+                      <th
+                        nzAlign="left"
+                        nzColumnKey="accountType"
+                        [nzSortFn]="true"
+                      >
+                        {{ "model.user.accountType" | translate }}
+                      </th>
+                      <th nzAlign="center">
+                        {{ "model.user.phoneNumber" | translate }}
+                      </th>
+                      <th nzAlign="left" nzColumnKey="email" [nzSortFn]="true">
+                        {{ "model.user.email" | translate }}
+                      </th>
+                      <th
+                        nzAlign="left"
+                        nzColumnKey="employeeCode"
+                        [nzSortFn]="true"
+                      >
+                        {{ "model.user.employeeCodeSort" | translate }}
+                      </th>
+                      <th
+                        nzAlign="center"
+                        nzColumnKey="status"
+                        [nzSortFn]="true"
+                      >
+                        {{ "common.status" | translate }}
+                      </th>
+                      <th
+                        nzAlign="center"
+                        [nzWidth]="'180px'"
+                        *hasRoles="['user_group:update']"
+                      >
+                        {{ "action.msg" | translate }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let item of members; let i = index">
+                      <tr>
+                        <td nzAlign="center">{{ getIndex(i) }}</td>
+                        <td
+                          nzAlign="left"
+                          [nzTooltipTitle]="item.fullName"
+                          nzTooltipPlacement="top"
+                          nz-tooltip
+                        >
+                          {{ getLimitLength(item.fullName!) }}
+                        </td>
+                        <td nzAlign="left">{{ item.username }}</td>
+                        <td nzAlign="left">{{ item.authenticationType }}</td>
+                        <td nzAlign="center">{{ item.phoneNumber }}</td>
+                        <td
+                          nzAlign="left"
+                          [nzTooltipTitle]="item.email"
+                          nzTooltipPlacement="top"
+                          nz-tooltip
+                        >
+                          {{ item.email }}
+                        </td>
+                        <td nzAlign="left">{{ item.employeeCode }}</td>
+                        <td nzAlign="center">
+                          <mb-badge
+                            [color]="
+                              item.status === userActive
+                                ? 'badge-info'
+                                : 'badge-secondary'
+                            "
+                            [text]="format(item.status, 'status')"
+                          >
+                          </mb-badge>
+                        </td>
+                        <td nzAlign="center" *hasRoles="['user_group:update']">
+                          <mb-button-action
+                            [action]="'delete'"
+                            className="first"
+                            nzTooltipTitle="{{ 'action.delete' | translate }}"
+                            nzTooltipPlacement="top"
+                            nz-tooltip
+                            (click)="onRemoveMember(item)"
+                          >
+                          </mb-button-action>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </nz-table>
+                <mb-pagination
+                  [pageIndex]="pageIndex"
+                  [pageSize]="pageSize"
+                  [pageSizeOptions]="pageSizeOptions"
+                  [total]="memberTotal"
+                  (onChange)="onQuerySearch($event)"
+                >
+                </mb-pagination>
+              </ng-container>
+              <ng-container *ngIf="!members || members.length === 0">
+                <mb-no-data></mb-no-data>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<mb-modal
+  [title]="groupDeletePopup.title"
+  [content]="groupDeletePopup.content"
+  [okText]="groupDeletePopup.okText"
+  [btnCentered]="true"
+  [isVisible]="isVisible"
+  (emitter)="onRemoveMemberFromGroup($event)"
+>
+</mb-modal>
+<ng-template #noDataResult>
+  <mb-no-data></mb-no-data>
+</ng-template>

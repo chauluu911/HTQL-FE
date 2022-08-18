@@ -1,0 +1,438 @@
+<div class="title mb-3">
+  <mb-table-title
+    [title]="
+      (action === ROUTER_ACTIONS.update
+        ? 'model.notification.update'
+        : action === ROUTER_ACTIONS.detail
+        ? 'model.notification.detail'
+        : 'model.notification.create'
+      ) | translate
+    "
+    [showBack]="true"
+    [url]="NOTIFICATION_URL"
+    [navigationExtras]="navigationExtras"
+  >
+  </mb-table-title>
+</div>
+<section class="content">
+  <div class="row">
+    <div class="col-12">
+      <form
+        [formGroup]="form"
+        *ngIf="
+          ((action === ROUTER_ACTIONS.detail ||
+            action === ROUTER_ACTIONS.update) &&
+            notification.id) ||
+          action === ROUTER_ACTIONS.create
+        "
+      >
+        <div class="row">
+          <div class="col-6 mb-2">
+            <label
+              >{{ "model.notification.typeSend.root" | translate }}
+              <span class="text-danger">*</span></label
+            >
+            <br />
+            <nz-select
+              formControlName="sendTo"
+              nzAllowClear
+              removeOptionTitle
+              (ngModelChange)="getTypeSend($event)"
+              [nzDisabled]="action === ROUTER_ACTIONS.detail"
+              nzPlaceHolder="{{
+                'model.notification.typeSend.root' | translate
+              }}"
+            >
+              <nz-option
+                *ngFor="let service of NOTIFICATION_SEND_STATUS"
+                [nzLabel]="service.label | translate"
+                [nzValue]="service.value"
+                [nzCustomContent]="true"
+              >
+                <div
+                  container="body"
+                  [animation]="false"
+                  [openDelay]="100"
+                  [closeDelay]="0"
+                  [ngbTooltip]="service?.label! | translate"
+                >
+                  {{ service?.label! | translate }}
+                </div>
+              </nz-option>
+            </nz-select>
+            <ng-container
+              *ngIf="form.get('sendTo')?.touched || form.get('sendTo')?.dirty"
+            >
+              <span
+                class="text-danger"
+                *ngIf="form.get('sendTo')?.hasError('required')"
+              >
+                <mb-not-blank
+                  [value]="'model.notification.typeSend.root'"
+                ></mb-not-blank>
+              </span>
+            </ng-container>
+          </div>
+          <div class="col-6 mb-2">
+            <label
+              >{{ "model.notification.typeNotification" | translate }}
+              <span class="text-danger">*</span></label
+            >
+            <br />
+            <nz-select
+              formControlName="types"
+              nzAllowClear
+              removeOptionTitle
+              [nzShowArrow]="true"
+              nzMode="multiple"
+              [nzDisabled]="action === ROUTER_ACTIONS.detail"
+              [nzDropdownRender]="renderTemplateTypes"
+              nzPlaceHolder="{{
+                'model.notification.typeNotification' | translate
+              }}"
+            >
+              <nz-option
+                *ngFor="let service of NOTIFICATION_TYPES_STATUS"
+                [nzLabel]="service.label | translate"
+                [nzValue]="service.value"
+                [nzCustomContent]="true"
+              >
+                <div
+                  container="body"
+                  [animation]="false"
+                  [openDelay]="100"
+                  [closeDelay]="0"
+                  [ngbTooltip]="service?.label! | translate"
+                >
+                  {{ service?.label! | translate }}
+                </div>
+              </nz-option>
+            </nz-select>
+            <ng-template #renderTemplateTypes>
+              <mb-select-all
+                *ngIf="NOTIFICATION_TYPES_STATUS.length > 0"
+                (click)="selectAll('types', NOTIFICATION_TYPES_STATUS)"
+              >
+              </mb-select-all>
+            </ng-template>
+            <ng-container
+              *ngIf="form.get('types')?.touched || form.get('types')?.dirty"
+            >
+              <span
+                class="text-danger"
+                *ngIf="form.get('types')?.hasError('required')"
+              >
+                <mb-not-blank
+                  [value]="'model.notification.typeNotification'"
+                ></mb-not-blank>
+              </span>
+            </ng-container>
+          </div>
+          <div class="col-6 mb-2">
+            <label
+              >{{ "model.notification.user" | translate }}
+              <span class="text-danger">*</span></label
+            >
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              [nzDropdownRender]="renderTemplate"
+              [nzShowArrow]="true"
+              removeOptionTitle
+              nzPlaceHolder="{{ 'model.notification.user' | translate }}"
+              nzMode="multiple"
+              [nzDisabled]="action === ROUTER_ACTIONS.detail"
+              [nzMaxTagCount]="2"
+              [nzMaxTagPlaceholder]="userTag"
+              formControlName="userIds"
+            >
+              <nz-option
+                *ngFor="let item of users"
+                [nzCustomContent]="true"
+                [nzLabel]="item?.fullName || ''"
+                [nzValue]="item?.id"
+              >
+                <div
+                  container="body"
+                  [animation]="false"
+                  [openDelay]="100"
+                  [closeDelay]="0"
+                  [ngbTooltip]="item?.username! + ' - ' + item?.fullName"
+                >
+                  {{
+                    item?.username! +
+                      " - " +
+                      getLimitLength(item?.fullName! || "")
+                  }}
+                </div>
+              </nz-option>
+            </nz-select>
+            <!-- {{users | json}} -->
+            <ng-template #renderTemplate>
+              <mb-select-all
+                *ngIf="users.length > 0"
+                (click)="selectAll('userIds', users)"
+              >
+              </mb-select-all>
+            </ng-template>
+            <ng-template #userTag let-selectedList>
+              <span
+                >{{ "+" + selectedList.length }}
+                {{ "common.person" | translate }}</span
+              >
+            </ng-template>
+            <ng-container
+              *ngIf="form.get('userIds')?.touched || form.get('userIds')?.dirty"
+            >
+              <span
+                class="text-danger"
+                *ngIf="form.get('userIds')?.hasError('required')"
+              >
+                <mb-not-blank
+                  [value]="'model.notification.user'"
+                ></mb-not-blank>
+              </span>
+              <span
+                class="text-danger"
+                *ngIf="form.get('userIds')?.hasError('pattern')"
+              >
+                <small>{{ "common.pattern" | translate }}</small>
+              </span>
+            </ng-container>
+          </div>
+          <div class="col-6 mb-2">
+            <label
+              >{{ "model.notification.department" | translate }}
+              <span class="text-danger">*</span></label
+            >
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              [nzDropdownRender]="renderTemplateDepartment"
+              [nzShowArrow]="true"
+              removeOptionTitle
+              nzPlaceHolder="{{ 'model.notification.department' | translate }}"
+              nzMode="multiple"
+              [nzDisabled]="action === ROUTER_ACTIONS.detail"
+              [nzMaxTagCount]="2"
+              [nzMaxTagPlaceholder]="departmentTag"
+              formControlName="departmentIds"
+            >
+              <nz-option
+                *ngFor="let item of departments"
+                [nzCustomContent]="true"
+                [nzLabel]="item?.name || ''"
+                [nzValue]="item?.id"
+              >
+                <div
+                  container="body"
+                  [animation]="false"
+                  [openDelay]="100"
+                  [closeDelay]="0"
+                  [ngbTooltip]="item?.code! + ' - ' + item?.name"
+                >
+                  {{ item?.code! + " - " + getLimitLength(item?.name! || "") }}
+                </div>
+              </nz-option>
+            </nz-select>
+            <ng-template #renderTemplateDepartment>
+              <mb-select-all
+                *ngIf="departments.length > 0"
+                (click)="selectAll('departmentIds', departments)"
+              >
+              </mb-select-all>
+            </ng-template>
+            <ng-template #departmentTag let-selectedList>
+              <span
+                >{{ "+" + selectedList.length }}
+                {{ "model.user.department" | translate }}</span
+              >
+            </ng-template>
+            <ng-container
+              *ngIf="
+                form.get('departmentIds')?.touched ||
+                form.get('departmentIds')?.dirty
+              "
+            >
+              <span
+                class="text-danger"
+                *ngIf="form.get('departmentIds')?.hasError('required')"
+              >
+                <mb-not-blank
+                  [value]="'model.notification.department'"
+                ></mb-not-blank>
+              </span>
+              <span
+                class="text-danger"
+                *ngIf="form.get('departmentIds')?.hasError('pattern')"
+              >
+                <small>{{ "common.pattern" | translate }}</small>
+              </span>
+            </ng-container>
+          </div>
+          <div class="col-6 mb-2">
+            <label
+              >{{ "model.notification.list.estimatedDate" | translate }}
+              <span class="text-danger">*</span></label
+            >
+            <div class="date-picker">
+              <nz-date-picker
+                formControlName="date"
+                [nzDisabled]="action === ROUTER_ACTIONS.detail"
+                (keyup.enter)="enterDatePicker($event)"
+                [nzDisabledDate]="disabledBeforeToday"
+                [nzFormat]="'dd/MM/yyyy'"
+                #datePicker
+                nzPlaceHolder="{{ 'DD/MM/YYYY' | translate }}"
+              >
+              </nz-date-picker>
+            </div>
+            <ng-container
+              *ngIf="form.get('date')?.touched || form.get('date')?.dirty"
+            >
+              <span
+                class="text-danger"
+                *ngIf="form.get('date')?.hasError('required')"
+              >
+                <mb-not-blank
+                  [value]="'model.notification.list.estimatedDate'"
+                ></mb-not-blank>
+              </span>
+              <span
+                class="text-danger"
+                *ngIf="form.get('date')?.hasError('pattern')"
+              >
+                <small>{{ "common.pattern" | translate }}</small>
+              </span>
+            </ng-container>
+          </div>
+          <div class="col-12 mb-2">
+            <label
+              >{{ "model.notification.list.title" | translate }}
+              <span class="text-danger">*</span></label
+            >
+            <input
+              formControlName="title"
+              nz-input
+              [maxLength]="200"
+              placeholder="{{ 'model.notification.list.title' | translate }}"
+            />
+            <ng-container
+              *ngIf="form.get('title')?.touched || form.get('title')?.dirty"
+            >
+              <span
+                class="text-danger"
+                *ngIf="form.get('title')?.hasError('required')"
+              >
+                <mb-not-blank
+                  [value]="'model.notification.list.title'"
+                ></mb-not-blank>
+              </span>
+              <span
+                class="text-danger"
+                *ngIf="form.get('title')?.hasError('pattern')"
+              >
+                <small>{{ "common.pattern" | translate }}</small>
+              </span>
+            </ng-container>
+          </div>
+          <div class="col-12 mb-2">
+            <label
+              >{{ "model.notification.list.content" | translate }}
+              <span class="text-danger">*</span></label
+            >
+            <mb-editor
+              [placeholder]="'model.notification.list.content' | translate"
+              *ngIf="notification?.content || !isUpdate"
+              [isReadOnly]="action === ROUTER_ACTIONS.detail"
+              [value]="form?.get('content')?.value || ''"
+              (inputInvalid)="onHandleEditorInvalid($event)"
+              (data)="onChangeData($event)"
+            >
+            </mb-editor>
+            <ng-container
+              *ngIf="form.get('content')?.touched || form.get('content')?.dirty"
+            >
+              <span
+                class="text-danger"
+                *ngIf="form.get('content')?.hasError('required')"
+              >
+                <mb-not-blank
+                  [value]="'model.notification.list.content'"
+                ></mb-not-blank>
+              </span>
+              <span
+                class="text-danger"
+                *ngIf="form.get('content')?.hasError('pattern')"
+              >
+                <small>{{ "common.pattern" | translate }}</small>
+              </span>
+            </ng-container>
+          </div>
+          <div class="col-12 mb-2">
+            <label>{{ "common.note" | translate }}</label>
+            <textarea
+              rows="3"
+              [maxLength]="255"
+              placeholder="{{ 'common.note' | translate }}"
+              formControlName="note"
+              nz-input
+            ></textarea>
+          </div>
+          <div class="col-12 mb-2">
+            <label
+              [hidden]="files?.length === 0 && action === ROUTER_ACTIONS.detail"
+              >{{ "common.attachedFiles" | translate }}</label
+            >
+            <mb-file
+              class="mb-2"
+              [isRemove]="!(action === ROUTER_ACTIONS.detail)"
+              [filesOrigin]="files"
+              [filesUpload]="filesUpload"
+              [isDownload]="action === ROUTER_ACTIONS.detail"
+              (onChangeFilesOrigin)="getFilesOrigin($event)"
+              (onChangeFilesUpload)="getFiles($event)"
+            >
+            </mb-file>
+            <mb-upload-simple
+              *ngIf="!(action === ROUTER_ACTIONS.detail)"
+              [multiple]="true"
+              [easyUpload]="false"
+              [maxFileUpload]="maxFileUpload"
+              [disabled]="
+                (filesUpload?.length || 0) + (files?.length || 0) >=
+                maxFileUpload
+              "
+              [filesOrigin]="files"
+              [filesUpload]="filesUpload"
+              [acceptTypeFiles]="['pdf']"
+              (emitter)="getFiles($event)"
+            >
+            </mb-upload-simple>
+          </div>
+        </div>
+      </form>
+      <div
+        class="col-12 text-center mt-5"
+        *ngIf="!(action === ROUTER_ACTIONS.detail)"
+      >
+        <button nz-button nzType="default" (click)="onCancel()">
+          {{ "action.cancel" | translate }}
+        </button>
+        <button
+          class="ms-3"
+          nz-button
+          nzType="primary"
+          (click)="
+            this.action === ROUTER_ACTIONS.update
+              ? onUpdateSubmit()
+              : onSubmit()
+          "
+          [disabled]="!form.valid || isInvalid"
+        >
+          {{ "action.save" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

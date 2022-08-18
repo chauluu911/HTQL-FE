@@ -1,0 +1,71 @@
+.ant-picker.custom-fromDate {
+  border-radius: 5px 0 0 5px;
+  border-right-color: rgb(0, 0, 0, 0.0);
+  position: relative;
+  //left: 1px;
+  transition: none;
+}
+
+.ant-picker.custom-endDate {
+  border-radius: 0 5px 5px 0;
+  border-left-color: rgb(0, 0, 0, 0.0);
+  transition: none;
+
+}
+
+.ant-picker.custom-fromDate:hover {
+  border-right-color: rgb(0, 0, 0, 0.0);
+  border: none;
+}
+
+.ant-picker.custom-endDate:hover {
+  border-left-color: rgb(0, 0, 0, 0.0);
+  border: none;
+}
+
+.date-picker-group {
+  width: 100% !important;
+}
+
+.date-picker-group:hover {
+  border: 1px solid #0054A5;
+  box-shadow: 0 0 0 2px rgba(24,144,255,.2);
+  border-radius: 5px;
+}
+.date-picker-group.active {
+  border: 1px solid #0054A5;
+  box-shadow: 0 0 0 2px rgba(24,144,255,.2);
+  border-radius: 5px;
+}
+//.ant-picker-focused {
+//  border-color: #0054A5;
+//}
+
+//.ant-picker-input>input:hover {
+//  border-color: #db2628;
+//  border-right-width: 1px!important;
+//}
+
+.ant-picker-focused.custom-fromDate, .ant-picker-focused.custom-endDate {
+  //border-color: #0054A5;
+  //border-right-width: 1px !important;
+  outline: 0;
+  //box-shadow: 0 0 0 2px rgba(24,144,255,.2);
+  box-shadow: none;
+}
+.ant-picker-focused.custom-endDate {
+  border-left-color: rgb(0, 0, 0, 0.0);
+}
+.ant-picker-focused.custom-fromDate {
+  border-right-color: rgb(0, 0, 0, 0.0);
+}
+.custom-fromDate.active {
+  border-color: #0054A5;
+  border-right-color: rgb(0, 0, 0, 0.0);
+
+}
+.custom-endDate.active {
+  border-color: #0054A5;
+  border-left-color: rgb(0, 0, 0, 0.0);
+
+}

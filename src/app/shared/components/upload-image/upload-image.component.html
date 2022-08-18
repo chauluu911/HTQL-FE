@@ -1,0 +1,11 @@
+<div>
+  <div [class]="'image' + (customSizeImg ? ' custom-size-image' : '')">
+    <img [ngClass]="imageUrl + ' ' + className" [src]="getSource()" alt="action">
+    <div *ngIf="displayButton" class="camera">
+      <label for="file-input">
+        <img id="img-camera" [src]="getSourceAvatar()" alt="">
+      </label>
+      <input [accept]="acceptFiles" (change)="handleChange($event)" id="file-input" type="file" />
+    </div>
+  </div>
+</div>

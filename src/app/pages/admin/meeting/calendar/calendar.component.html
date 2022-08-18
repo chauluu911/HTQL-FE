@@ -1,0 +1,18 @@
+<app-calendar-header [(view)]="view" [(viewDate)]="viewDate" (viewDateChange)="fetchEvents()"
+    (viewChange)="fetchEvents()">
+</app-calendar-header>
+
+<div *ngIf="events$ | async; let events">
+    <div [ngSwitch]="view">
+        <mwl-calendar-month-view *ngSwitchCase="'month'" [viewDate]="viewDate" [events]="events">
+        </mwl-calendar-month-view>
+        <mwl-calendar-week-view *ngSwitchCase="'week'" [viewDate]="viewDate" [events]="events"
+            [dayStartHour]="minMeetingHour" [dayEndHour]="maxMeetingHour"
+            (eventClicked)="handleEvent('Clicked', $event.event)">
+        </mwl-calendar-week-view>
+        <mwl-calendar-day-view *ngSwitchCase="'day'" [viewDate]="viewDate" [events]="events"
+            [dayStartHour]="minMeetingHour" [dayEndHour]="maxMeetingHour"
+            (eventClicked)="handleEvent('Clicked', $event.event)">
+        </mwl-calendar-day-view>
+    </div>
+</div>

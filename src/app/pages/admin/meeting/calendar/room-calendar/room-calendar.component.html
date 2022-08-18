@@ -1,0 +1,54 @@
+<app-calendar-header [(view)]="view" [(viewDate)]="viewDate" (viewDateChange)="fetchEvents()"
+    (viewChange)="fetchEvents()">
+</app-calendar-header>
+
+<nz-table class="content mt-3">
+    <div [formGroup]="form" class="filter-element">
+        <div class="row p-4">
+            <div class="col-3">
+                <label>{{ getTranslate('name') }}</label>
+                <input formControlName="name" nz-input class="form-control"
+                    placeholder="{{ getTranslate('enterName') }}">
+            </div>
+            <div class="col-3">
+                <label>{{ getTranslate('code') }}</label>
+                <input formControlName="code" nz-input class="form-control"
+                    placeholder="{{ getTranslate('enterCode') }}">
+            </div>
+            <div class=" col-3">
+                <label>{{ getTranslate('location') }}</label>
+                <input formControlName="location" nz-input class="form-control"
+                    placeholder="{{ getTranslate('enterLocation') }}">
+            </div>
+            <div class="col-3">
+                <label>{{ 'model.user.status' | translate }}</label>
+                <br>
+                <nz-select formControlName="status" nzAllowClear removeOptionTitle
+                    nzPlaceHolder="{{ 'model.user.service.selectStatus' | translate }}">
+                    <nz-option *ngFor="let service of roomStatus" [nzLabel]="service.label | translate"
+                        [nzValue]="service.value" [nzCustomContent]="true">
+                        <div container="body" [animation]="false" [openDelay]="100" [closeDelay]="0"
+                            [ngbTooltip]="(service?.label!) | translate">{{(service?.label!) | translate}}</div>
+                    </nz-option>
+                </nz-select>
+            </div>
+        </div>
+    </div>
+</nz-table>
+
+<br />
+
+<div *ngIf="events$ | async; let events">
+    <div [ngSwitch]="view">
+        <mwl-calendar-month-view *ngSwitchCase="'month'" [viewDate]="viewDate" [events]="events">
+        </mwl-calendar-month-view>
+        <mwl-calendar-week-view *ngSwitchCase="'week'" [viewDate]="viewDate" [events]="events"
+            [dayStartHour]="minMeetingHour" [dayEndHour]="maxMeetingHour"
+            (eventClicked)="handleEvent('Clicked', $event.event)">
+        </mwl-calendar-week-view>
+        <mwl-calendar-day-view *ngSwitchCase="'day'" [viewDate]="viewDate" [events]="events"
+            [dayStartHour]="minMeetingHour" [dayEndHour]="maxMeetingHour"
+            (eventClicked)="handleEvent('Clicked', $event.event)">
+        </mwl-calendar-day-view>
+    </div>
+</div>

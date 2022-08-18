@@ -1,0 +1,113 @@
+  <div class="title mb-3">
+    <mb-table-title [showBack]="true" [title]="getTitle()"></mb-table-title>
+</div>
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+                <section class="content">
+                    <div class="row">
+                        <div class="col-2">
+                            <label>{{ getTranslate('title') }} <span >:</span></label>
+                        </div>
+                        <div class="col-10">{{meeting.title}}</div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-2">
+                            <label>{{ getTranslate('startDate') }} <span>:</span></label>
+                        </div>
+                        <div class="col-10">{{ meeting.startAt | date: "dd/MM/YYYY" }}</div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-2">
+                            <label>{{ getTranslate('startTime') }} <span>:</span></label>
+                        </div>
+                        <div class="col-10">{{ meeting.startAt | date:"HH:mm" }}</div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-2">
+                            <label>{{ getTranslate('finishDate') }} <span>:</span></label>
+                        </div>
+                        <div class="col-10">{{ meeting?.endDate | date: "dd/MM/YYYY"  }}</div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-2">
+                            <label>{{ getTranslate('finishTime') }} <span class="text-danger">:</span></label>            
+                        </div>
+                        <div class="col-10">{{ meeting?.finishAt | date: "HH:mm" }}</div>
+                    </div>
+                    
+                    <div class="row mt-2">
+                        <div class="col-2 mb-2">
+                            <label>{{ getTranslate('meetingType') }} <span>:</span></label>
+                        </div>
+                        <div *ngIf="meeting" class="col-10">{{ findMeetingType(meetingTypes, meeting.meetingType || '') | translate }}</div>
+                    </div>
+                    <ng-container *ngIf="meetingType === MEETING_TYPES.ONLINE">
+                        <div class="row mt-2">
+                            <div class="col-12 mb-2">
+                                <label>{{ getTranslate('link') }} <span class="text-danger">*</span></label>
+                                <input formControlName="link" nz-input
+                                    [maxLength]="LENGTH_VALIDATOR.CONTENT_MAX_LENGTH.MAX" class="form-control"
+                                    placeholder="{{ getTranslate('link') }}">
+                                <ng-container *ngIf="form.get('link')?.touched || form.get('link')?.dirty">
+                                    <span class="text-danger" *ngIf="form.get('link')?.hasError('required')">
+                                        <mb-not-blank [value]="getTranslate('link')"></mb-not-blank>
+                                    </span>
+                                    <span class="text-danger" *ngIf="form.get('link')?.hasError('pattern')">
+                                        <small>{{ 'common.pattern' | translate }}</small>
+                                    </span>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="meetingType === MEETING_TYPES.OFFLINE">
+                        <div class="row mt-2">
+                            <div class="col-2">
+                                <label>{{ getTranslate('meetingRoom') }} <span>:</span></label>                  
+                            </div>
+                            <div class="col-10">
+                                {{ findRoomByRoomId(rooms, meeting.roomId) }}                
+                            </div>
+                        </div>
+                    </ng-container>
+                    <div class="row mt-2">
+                        <div class="col-2 mb-2">
+                            <label>{{ getTranslate('description') }}<span>:</span></label>
+                        </div>
+                        <div class="col-10">
+                            <div [innerHTML]="meeting.description"></div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-2">
+                            <label>{{ getTranslate('presider') }} <span >:</span></label>
+                        </div>
+                        <mb-grid-view-employee [columns]="3" [data]="presiders" [getResource]="getResource" [getLimitLength]="getLimitLength"></mb-grid-view-employee>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-2">
+                            <label>{{ getTranslate('requiredUser') }} <span>:</span></label>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="gird_view_container row">
+                            <mb-grid-view-employee [columns]="3" [data]="requiredUsers" [getResource]="getResource" [getLimitLength]="getLimitLength"></mb-grid-view-employee>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-2">
+                            <label>{{ getTranslate('optionalUser') }} <span>:</span></label>
+                        </div>
+                        <mb-grid-view-employee [columns]="3" [data]="optionalUsers" [getResource]="getResource" [getLimitLength]="getLimitLength"></mb-grid-view-employee>
+                    </div>
+                </section>
+        </div>
+    </div>
+</section>
+
+   
+
+    
+
+
+

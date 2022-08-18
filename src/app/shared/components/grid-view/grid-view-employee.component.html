@@ -1,0 +1,71 @@
+<div class="gird_view_container row">
+    <ng-container *ngFor="let item of data; let i=index" >
+        <div [class]="{'col-lg-3': columns === 3, 'col-lg-4': columns === 4, 'col-md-4': true, 'col-sm-6': true, 'col-xs-12': true, 'mt-3':true}">
+            <div class="grid_item mb-3 d-flex flex-column">
+                <div class="grid_item_header d-flex align-items-center">
+                    <div class="grid_item_header_avatar me-4">
+                        <div *ngIf="!item.avatarFileUrl; else avatar;">
+                            <nz-avatar (click)="detail(item)" class="avatar-none" [nzSize]="75"
+                              class="{{ i % 2 == 0 ? 'avatar-yellow' : 'avatar-gray' }}"
+                              [nzText]="getFirstLetter(item.fullName)"></nz-avatar>
+                          </div>
+                          <ng-template #avatar>
+                            <nz-avatar (click)="detail(item)" class="avatar-image" [nzSize]="75"
+                              class="{{ i % 2 == 0 ? 'avatar-yellow' : 'avatar-gray' }}"
+                              [nzText]="getFirstLetter(item.fullName)" [nzSrc]="getResource(item.avatarFileUrl)"></nz-avatar>
+                          </ng-template>
+                    </div>
+                    <div class="grid_item_header_info">
+                        <div class="grid_item_header_info_name cursor" (click)="detail(item)">
+                            {{ item.fullName | uppercase }}
+                        </div>
+                        <div class="grid_item_header_info_jobTitle d-flex align-items-start"
+                         [nz-tooltip]="item.jobTitle">
+                            <div class="card_info_icon" >
+                                <i nz-icon nzType="team" nzTheme="outline"  [nz-tooltip]="'model.employee.employeeLevel' | translate"></i>
+                              </div>
+                              <div class="card_info_content">
+                                {{
+                                item.jobTitle
+                                ? ( change ? getLimitLength(item.jobTitle, 20) : item.jobTitle )
+                                : ('common.noInfo' | translate)
+                                }}
+                              </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="grid_item_body">
+
+                    <div class="grid_item_body_info mt-3">
+                        <div class="body_info_group">
+                            <div class="body_info_group_label">
+                                <i nz-icon nzType="mail" nzTheme="outline"></i>
+                                <span class="body_info_group_label_content ">
+                                    {{ "model.employee.email" | translate }}: 
+    
+                                </span>
+                            </div>
+                            <div class="body_info_group_content cursor"  (click)="detail(item)">
+                                {{ change ? getLimitLength(item.email, 15) : item.email }}
+                            </div>
+                        </div>
+                        <div class="body_info_group">
+                            <div class="body_info_group_label">
+                                <i nz-icon nzType="phone" nzTheme="outline"></i>
+                                <span class="body_info_group_label_content ">
+                                    {{ "model.employee.phoneNumber" | translate }}:
+    
+                                </span>
+                            </div>
+                            <div class="body_info_group_content cursor"  (click)="detail(item)">
+                                {{ change ? getLimitLength(item.phoneNumber, 11) : item.phoneNumber }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </ng-container>
+</div>

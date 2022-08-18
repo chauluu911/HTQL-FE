@@ -1,0 +1,89 @@
+.hr hr {
+  margin-left: 12px;
+  margin-top: 0;
+  margin-right: 0;
+  margin-bottom: 0;
+}
+
+#hr-description {
+  margin-left: 6px;
+  margin-top: 3px;
+  margin-right: 0;
+  margin-bottom: 0;
+}
+
+.card-header {
+  padding: 1rem 1.35rem;
+  margin-bottom: 0;
+  background-color: rgba(33, 40, 50, 0.03);
+  border-bottom: 1px solid rgba(33, 40, 50, 0.125);
+}
+
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-picker {
+  pointer-events: none;
+  border: none;
+}
+
+.label-style {
+  font-size: 16px;
+  font-weight: 550;
+}
+
+.section-custom {
+  border-radius: 0;
+  padding-bottom: 5px !important
+}
+
+.status {
+  margin-bottom: 6px;
+}
+
+.padding-top-8 {
+  padding-top: 8px;
+}
+
+.avatar {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.general-p p {
+  margin-bottom: 0;
+}
+
+.relative {
+  position: relative;
+}
+
+.general-title {
+  font-size: 20px;
+  font-weight: 500;
+  padding-left: 0;
+}
+// info job
+.info_wrapper_title{
+  font-weight: 500;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+.info_header {
+  font-size: 15px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.info_wrapper_content{
+  // overflow-x: scroll;
+}
+.info_wrapper_field {
+  font-weight: 400;
+  color: #3f4254;
+
+  .info_wrapper_field_label {
+    color: inherit;
+  }
+}

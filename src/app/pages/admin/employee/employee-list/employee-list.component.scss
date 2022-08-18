@@ -1,0 +1,108 @@
+.card {
+  min-height: 205px;
+  padding: 26px 40px;
+  margin-bottom: 20px;
+  box-shadow: 1px 2px 2px rgb(204, 204, 204, 0.5);
+  // margin-left: 12px;
+  // margin-right: 20px;
+}
+.card_info {
+  margin: 10px 0px;
+  display: flex;
+}
+.card_info_label {
+  font-weight: 600;
+}
+.card_info_icon {
+  margin-right: 10px;
+  color: rgb(100, 100, 235);
+}
+.card_border {
+  margin-top: 7px;
+  height: 10px;
+  border-bottom: 1px solid #ccc;
+}
+.card_descripton {
+  text-align: justify;
+  margin-top: 10px;
+  color: rgb(126, 130, 153);
+}
+.card_FullName {
+  font-weight: 700;
+}
+.avatar-blue {
+  background-color: lightblue;
+}
+.avatar-yellow {
+  background-color: yellowgreen;
+}
+.avatar-gray {
+  background-color: #ccc;
+}
+
+.button-center {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.padding-left-none {
+  padding-left: 0 !important;
+}
+
+.height-160 {
+  height: 160px !important;
+}
+
+.ant-avatar {
+  margin-top: 6px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 50px;
+  font-weight: 500;
+}
+
+.view-btn {
+  // position: absolute;
+  // top: 50%;
+  // -ms-transform: translateY(-50%);
+  // transform: translateY(-50%);
+}
+
+.relative {
+  position: relative;
+}
+
+.align-items {
+  align-items: center;
+}
+
+.center {
+  text-align: center;
+  justify-content: center;
+  align-content: center;
+  margin-left: -5px;
+  padding-bottom: 13px;
+  padding-top: 12px;
+}
+
+.avatar-none {
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.avatar-image {
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.poiter {
+  cursor: pointer;
+}
+
+.info {
+  position: absolute;
+  top: 10%;
+  left: 12px;
+  right: 0;
+}

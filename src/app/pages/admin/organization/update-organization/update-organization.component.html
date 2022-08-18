@@ -1,0 +1,180 @@
+<section class="content">
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <button class="nav-link active" id="nav-customer-tab" data-bs-toggle="tab" data-bs-target="#nav-customer" type="button" role="tab" aria-controls="nav-customer" aria-selected="true">{{ "model.organization.customerInfo" | translate }}</button>
+            <button class="nav-link" id="nav-rental-tab" data-bs-toggle="tab" data-bs-target="#nav-rental" type="button" role="tab" aria-controls="nav-rental" aria-selected="false">{{ "model.organization.rentalInfo" | translate }}</button>
+            <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">{{ "model.organization.contact" | translate }}</button>
+        </div>
+    </nav>
+    <div *nzModalTitle class="title1">
+        <span>{{
+          (isUpdate ? "action.update" : "action.create") | translate
+        }}</span>
+    </div>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-customer" role="tabpanel" aria-labelledby="nav-customer-tab">
+            <div class="row" [formGroup]="form">
+                <div class="col-6 mb-1 pl-5">
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label>{{ "model.organization.businessCode" | translate
+                                }}<span class="text-danger">*</span></label
+                            >
+                            <input
+                            formControlName="businessCode"
+                            nz-input
+                            [disabled]="isUpdate"
+                            [maxLength]="LENGTH_VALIDATOR.NAME_MAX_LENGTH.MAX"
+                            placeholder="{{ 'model.organization.businessCode' | translate }}"
+                            />
+                            <ng-container
+                            *ngIf="form.get('businessCode')?.value || form.get('businessCode')?.dirty"
+                            >
+                            <span
+                                class="text-danger"
+                                *ngIf="form.get('businessCode')?.hasError('required')"
+                            >
+                                <mb-not-blank [value]="'model.organization.businessCode'"></mb-not-blank>
+                            </span>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label>{{ "model.organization.email" | translate }}
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input formControlName="email" nz-input [maxLength]="LENGTH_VALIDATOR.EMAIL_MAX_LENGTH.MAX" placeholder="{{
+                                'model.organization.email' | translate
+                            }}" />
+                            <ng-container *ngIf="form.get('email')?.touched || form.get('email')?.dirty">
+                                <span class="text-danger" *ngIf="form.get('email')?.hasError('required')">
+                                <mb-not-blank
+                                [value]="'model.organization.email'"
+                                ></mb-not-blank>
+                            </span>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label>{{ "model.organization.name" | translate }}
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input formControlName="name" nz-input [maxLength]="LENGTH_VALIDATOR.NAME_MAX_LENGTH.MAX" placeholder="{{
+                                'model.organization.name' | translate
+                            }}" />
+                            <ng-container *ngIf="form.get('name')?.touched || form.get('name')?.dirty">
+                                <span class="text-danger" *ngIf="form.get('name')?.hasError('required')">
+                                <mb-not-blank
+                                [value]="'model.organization.name'"
+                                ></mb-not-blank>
+                            </span>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label>{{ "model.organization.invoiceIssuingAddress" | translate }}
+                            </label>
+                            <input formControlName="invoiceIssuingAddress" nz-input [maxLength]="LENGTH_VALIDATOR.NAME_MAX_LENGTH.MAX" placeholder="{{
+                                'model.organization.invoiceIssuingAddress' | translate
+                            }}" />
+                            <ng-container *ngIf="form.get('invoiceIssuingAddress')?.touched || form.get('invoiceIssuingAddress')?.dirty">
+                            </ng-container>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label>{{ "model.user.status" | translate }} 
+                                <span class="text-danger">*</span>
+                            </label>
+                            <br />
+                            <nz-select formControlName="status" nzAllowClear removeOptionTitle nzPlaceHolder="{{
+                                  'model.user.service.selectStatus' | translate
+                            }}">
+                                <nz-option *ngFor="let temp of organizationStatus " [nzLabel]="temp.label | translate" [nzValue]="temp.value" [nzCustomContent]="true">
+                                    <div container="body" [animation]="false" [openDelay]="100" [closeDelay]="0" [ngbTooltip]="temp?.label! | translate">
+                                        {{ temp?.label! | translate }}
+                                    </div>
+                                </nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-1 pl-5">
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label>{{ "model.organization.type" | translate }} 
+                                <span class="text-danger">*</span>
+                            </label>
+                            <br />
+                            <nz-select formControlName="type" nzAllowClear removeOptionTitle nzPlaceHolder="{{
+                                  'model.organization.service.selectType' | translate
+                            }}">
+                                <nz-option *ngFor="let temp of organizationTypeStatus " [nzLabel]="temp.label | translate" [nzValue]="temp.value" [nzCustomContent]="true">
+                                    <div container="body" [animation]="false" [openDelay]="100" [closeDelay]="0" [ngbTooltip]="temp?.label! | translate">
+                                        {{ temp?.label! | translate }}
+                                    </div>
+                                </nz-option>
+                            </nz-select>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label>{{ "model.organization.legalRepresentative" | translate }}
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input formControlName="legalRepresentative" nz-input [maxLength]="LENGTH_VALIDATOR.NAME_MAX_LENGTH.MAX" placeholder="{{
+                                'model.organization.legalRepresentative' | translate
+                            }}" />
+                            <ng-container *ngIf="form.get('legalRepresentative')?.touched || form.get('legalRepresentative')?.dirty">
+                                <span class="text-danger" *ngIf="form.get('legalRepresentative')?.hasError('required')">
+                                <mb-not-blank
+                                [value]="'model.organization.legalRepresentative'"
+                                ></mb-not-blank>
+                            </span>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label>{{ "model.organization.phoneNumber" | translate }}
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input formControlName="phoneNumber" nz-input [maxLength]="LENGTH_VALIDATOR.PHONE_MAX_LENGTH.MAX" placeholder="{{
+                                'model.organization.phoneNumber' | translate
+                            }}" />
+                            <ng-container *ngIf="form.get('phoneNumber')?.touched || form.get('phoneNumber')?.dirty">
+                                <span class="text-danger" *ngIf="form.get('phoneNumber')?.hasError('required')">
+                                <mb-not-blank
+                                [value]="'model.organization.phoneNumber'"
+                                ></mb-not-blank>
+                            </span>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label>{{ "model.organization.incorporationDate" | translate }}</label>
+                            <nz-date-picker formControlName="incorporationDate" (keyup.enter)="enterDatePicker($event)" [nzDisabledDate]="disabledAfterToday" [nzFormat]="'dd/MM/yyyy'" nzPlaceHolder="{{ 'DD/MM/YYYY' | translate }}" #datePicker>
+                            </nz-date-picker>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="nav-rental" role="tabpanel" aria-labelledby="nav-rental-tab">Thông Tin Thuê</div>
+        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">Thông Tin Liên Hệ</div>
+    </div>
+</section>
+<div class="row">
+    <div class="col-12 text-center" *nzModalFooter>
+        <button nz-button nzType="default" class="e-2" (click)="onCancel()">
+        {{ "action.cancel" | translate }}
+      </button>
+        <button nz-button nzType="primary" [disabled]="form.invalid" (click)="onSubmit()">
+        {{ (isUpdate ? "action.update" : "action.create") | translate }}
+      </button>
+    </div>
+</div>

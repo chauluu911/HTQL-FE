@@ -1,0 +1,429 @@
+<div class="title mb-3">
+    <mb-table-title [showBack]="true" [title]="getTitle()"></mb-table-title>
+</div>
+<section class="content">
+    <div class="row">
+        <div class="col-12">
+            <form [formGroup]="form">
+                <section class="content">
+                    <div class="row">
+                        <div class="col-12 mb-2">
+                            <label>{{ getTranslate('title') }} <span class="text-danger">*</span></label>
+                            <input formControlName="title" nz-input [maxLength]="LENGTH_VALIDATOR.TITLE_MAX_LENGTH.MAX"
+                                class="form-control" placeholder="{{ 'model.meeting.title' | translate }}">
+                            <ng-container *ngIf="form.get('title')?.touched || form.get('title')?.dirty">
+                                <span class="text-danger" *ngIf="form.get('title')?.hasError('required')">
+                                    <mb-not-blank [value]="getTranslate('title')"></mb-not-blank>
+                                </span>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12 mb-2">
+                            <label>{{ getTranslate('requiredUser') }} <span class="text-danger">*</span></label>
+                            <nz-select nzShowSearch nzAllowClear [nzDropdownRender]="renderRequiredTemplate"
+                                class="pr-1" nzMode="multiple" [nzMaxTagCount]="5" formControlName="requiredUserIds"
+                                removeOptionTitle [nzShowArrow]="true" (nzFocus)="searchRequiredUsers('')"
+                                appDebounceKeyUp (onEvent)="searchRequiredUsers($event)" nzServerSearch
+                                [nzMaxTagPlaceholder]="requiredUserTag"
+                                nzPlaceHolder="{{ 'model.meeting.attendee' | translate }}" id="requiredUser">
+                                <nz-option *ngFor="let user of requiredUsers" [nzCustomContent]="true"
+                                    [nzValue]="user?.id" [nzLabel]="getLimitLength(user.fullName!, 30)">
+                                    <div container="body" [animation]="false" [openDelay]="100" [closeDelay]="0"
+                                        [ngbTooltip]="user?.fullName">{{user?.fullName}}</div>
+                                </nz-option>
+                            </nz-select>
+                            <ng-template #renderRequiredTemplate>
+                                <mb-select-all *ngIf="requiredUsers.length > 0"
+                                    (click)="selectAll('requiredUserIds', requiredUsers)">
+                                </mb-select-all>
+                            </ng-template>
+                            <ng-template #requiredUserTag let-selectedList>
+                                <span>{{ '+' + selectedList.length }} {{ 'model.meeting.attendee' | translate }}</span>
+                            </ng-template>
+                            <ng-container
+                                *ngIf="form.get('requiredUserIds')?.touched || form.get('requiredUserIds')?.dirty">
+                                <span class="text-danger" *ngIf="form.get('requiredUserIds')?.hasError('required')">
+                                    <mb-not-blank [value]="'model.meeting.requiredUser'"></mb-not-blank>
+                                </span>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12 mb-2">
+                            <label>{{ getTranslate('optionalUser') }} </label>
+                            <nz-select nzShowSearch nzAllowClear [nzDropdownRender]="renderOptionalTemplate"
+                                class="pr-1" nzMode="multiple" [nzMaxTagCount]="5" formControlName="optionalUserIds"
+                                removeOptionTitle [nzShowArrow]="true" (nzFocus)="searchOptionalUsers('')"
+                                appDebounceKeyUp (onEvent)="searchOptionalUsers($event)" nzServerSearch
+                                [nzMaxTagPlaceholder]="optionalUserTag"
+                                nzPlaceHolder="{{ 'model.meeting.attendee' | translate }}" id="optionalUser">
+                                <nz-option *ngFor="let user of optionalUsers" [nzCustomContent]="true"
+                                    [nzValue]="user?.id" [nzLabel]="getLimitLength(user.fullName!, 30)">
+                                    <div container="body" [animation]="false" [openDelay]="100" [closeDelay]="0"
+                                        [ngbTooltip]="user?.fullName">{{user?.fullName}}</div>
+                                </nz-option>
+                            </nz-select>
+                            <ng-template #renderOptionalTemplate>
+                                <mb-select-all *ngIf="optionalUsers.length > 0"
+                                    (click)="selectAll('optionalUserIds', optionalUsers)">
+                                </mb-select-all>
+                            </ng-template>
+                            <ng-template #optionalUserTag let-selectedList>
+                                <span>{{ '+' + selectedList.length }} {{ 'model.meeting.attendee' | translate }}</span>
+                            </ng-template>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12 mb-2">
+                            <label>{{ getTranslate('presider') }} </label>
+                            <nz-select nzShowSearch nzAllowClear [nzDropdownRender]="renderOptionalTemplate"
+                                class="pr-1" formControlName="presiderId" removeOptionTitle [nzShowArrow]="true"
+                                (nzFocus)="searchPresider('')" appDebounceKeyUp (onEvent)="searchPresider($event)"
+                                nzServerSearch [nzMaxTagPlaceholder]="optionalUserTag"
+                                nzPlaceHolder="{{ 'model.meeting.attendee' | translate }}" id="optionalUser">
+                                <nz-option *ngFor="let user of presiders" [nzCustomContent]="true" [nzValue]="user?.id"
+                                    [nzLabel]="user?.fullName">
+                                    <div container="body" [animation]="false" [openDelay]="100" [closeDelay]="0"
+                                        [ngbTooltip]="user?.fullName">{{user?.fullName}}</div>
+                                </nz-option>
+                            </nz-select>
+                            <ng-template #renderOptionalTemplate>
+                                <mb-select-all *ngIf="presiders.length > 0"
+                                    (click)="selectAll('presiderId', presiders)">
+                                </mb-select-all>
+                            </ng-template>
+                            <ng-template #optionalUserTag let-selectedList>
+                                <span>{{ '+' + selectedList.length }} {{ 'model.meeting.attendee' | translate }}</span>
+                            </ng-template>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-3 mb-2">
+                            <label>{{ getTranslate('startDate') }} <span class="text-danger">*</span></label>
+                            <div class="date-picker">
+                                <nz-date-picker formControlName="startDate" [nzId]="'startDatePicker'"
+                                    (keyup.enter)="enterDatePicker($event, 'startDate')"
+                                    [nzDisabledDate]="disabledBeforeToday" [nzFormat]="'dd/MM/yyyy'" #startDatePicker
+                                    nzPlaceHolder="DD/MM/YYYY">
+                                </nz-date-picker>
+                            </div>
+                            <ng-container *ngIf="form.get('startDate')?.touched || form.get('startDate')?.dirty">
+                                <span class="text-danger" *ngIf="form.get('startDate')?.hasError('required')">
+                                    <mb-not-blank [value]="'model.meeting.startDate'"></mb-not-blank>
+                                </span>
+                                <span class="text-danger" *ngIf="form.get('startDate')?.hasError('pattern')">
+                                    <small>{{ 'common.pattern' | translate }}</small>
+                                </span>
+                            </ng-container>
+                        </div>
+                        <div class="col-2 mb-2">
+                            <label>{{ getTranslate('startTime') }} <span class="text-danger">*</span></label>
+                            <br>
+                            <nz-select formControlName="startTime" nzAllowClear removeOptionTitle
+                                (ngModelChange)="changeStartTime($event)">
+                                <nz-option *ngFor="let startTime of startTimeBlocks" [nzLabel]="startTime"
+                                    [nzValue]="startTime" [nzCustomContent]="true">
+                                    <div container="body" [animation]="false" [openDelay]="100" [closeDelay]="0"
+                                        [ngbTooltip]="startTime">{{startTime}}
+                                    </div>
+                                </nz-option>
+                            </nz-select>
+                            <ng-container *ngIf="form.get('startTime')?.touched || form.get('startTime')?.dirty">
+                                <span class="text-danger" *ngIf="form.get('startTime')?.hasError('required')">
+                                    <mb-not-blank [value]="getTranslate('startTime')"></mb-not-blank>
+                                </span>
+                            </ng-container>
+                        </div>
+                        <span class="col-2 mb-2 p-0">
+                            <i nz-icon nzType="arrow-right" class="date-arrow" nzTheme="outline"></i>
+                        </span>
+                        <div class="col-3 mb-2">
+                            <label>{{ getTranslate('finishDate') }} <span class="text-danger">*</span></label>
+                            <div class="date-picker">
+                                <nz-date-picker formControlName="finishDate" [nzId]="'finishDatePicker'"
+                                    (keyup.enter)="enterDatePicker($event, 'finishDate')"
+                                    [nzDisabledDate]="disabledBeforeStartAt" [nzFormat]="'dd/MM/yyyy'" #finishDatePicker
+                                    [nzDefaultPickerValue]="startDate" nzPlaceHolder="DD/MM/YYYY">
+                                </nz-date-picker>
+                            </div>
+                            <ng-container *ngIf="form.get('finishDate')?.touched || form.get('finishDate')?.dirty">
+                                <span class="text-danger" *ngIf="form.get('finishDate')?.hasError('required')">
+                                    <mb-not-blank [value]="'model.meeting.finishDate'"></mb-not-blank>
+                                </span>
+                                <span class="text-danger" *ngIf="form.get('finishDate')?.hasError('pattern')">
+                                    <small>{{ 'common.pattern' | translate }}</small>
+                                </span>
+                            </ng-container>
+                        </div>
+                        <div class="col-2 mb-2">
+                            <label>{{ getTranslate('finishTime') }} <span class="text-danger">*</span></label>
+                            <br>
+                            <nz-select formControlName="finishTime" nzAllowClear removeOptionTitle>
+                                <nz-option *ngFor="let finishTime of finishTimeBlocks" [nzLabel]="finishTime"
+                                    [nzValue]="finishTime" [nzCustomContent]="true">
+                                    <div container="body" [animation]="false" [openDelay]="100" [closeDelay]="0"
+                                        [ngbTooltip]="finishTime">{{finishTime}}
+                                    </div>
+                                </nz-option>
+                            </nz-select>
+                            <ng-container *ngIf="form.get('finishTime')?.touched || form.get('finishTime')?.dirty">
+                                <span class="text-danger" *ngIf="form.get('finishTime')?.hasError('required')">
+                                    <mb-not-blank [value]="getTranslate('finishTime')"></mb-not-blank>
+                                </span>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-2 mb-2">
+                            <label>{{ getTranslate('repeatType') }} <span class="text-danger">*</span></label>
+                            <br>
+                            <nz-select formControlName="repeatType" nzAllowClear removeOptionTitle
+                                (ngModelChange)="changeRepeatType($event)">
+                                <nz-option *ngFor="let service of repeatTypes" [nzLabel]="service.label | translate"
+                                    [nzValue]="service.value" [nzCustomContent]="true">
+                                    <div container="body" [animation]="false" [openDelay]="100" [closeDelay]="0"
+                                        [ngbTooltip]="(service?.label!) | translate">{{(service?.label!) | translate}}
+                                    </div>
+                                </nz-option>
+                            </nz-select>
+                            <ng-container *ngIf="form.get('repeatType')?.touched || form.get('repeatType')?.dirty">
+                                <span class="text-danger" *ngIf="form.get('repeatType')?.hasError('required')">
+                                    <mb-not-blank [value]="getTranslate('repeatType')"></mb-not-blank>
+                                </span>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <ng-container *ngIf="repeatType != REPEAT_TYPES.NOT_REPEAT">
+                        <div class="row mt-3">
+                            <div class="col-2 mt-2">
+                                <label class="float-end">{{ getTranslate('repeat-every') }} </label>
+                            </div>
+                            <div class="col-1 mb-2">
+                                <input formControlName="repeatMeasure" min="1" nz-input appNumbersOnly
+                                    class="form-control" type="number">
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="repeatType == REPEAT_TYPES.WEEKLY_REPEAT">
+                        <div class="row">
+                            <div class="col-2 mt-3"></div>
+                            <div class="col-10 mb-3 p-3">
+                                <nz-checkbox-group [(ngModel)]="weekOptions" (ngModelChange)="changeWeekOptions($event)"
+                                    [ngModelOptions]="{standalone: true}">
+                                </nz-checkbox-group>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container
+                        *ngIf="repeatType == REPEAT_TYPES.MONTHLY_REPEAT || repeatType == REPEAT_TYPES.YEARLY_REPEAT">
+                        <div class="row">
+                            <nz-radio-group class="mb-2 p-3" [(ngModel)]="radioValue" [nzDisabled]="isDetail"
+                                [ngModelOptions]="{standalone: true}">
+                                <div class="row">
+                                    <div class="col-2 mt-2">
+                                        <label class="float-end" nz-radio nzValue="FIRST_OPTION">
+                                            {{ (repeatType == REPEAT_TYPES.MONTHLY_REPEAT ? getTranslate('on-day') :
+                                            getTranslate('on')) |
+                                            translate }}
+                                        </label>
+                                    </div>
+                                    <ng-container *ngIf="repeatType == REPEAT_TYPES.YEARLY_REPEAT">
+                                        <div class="col-2 mb-2">
+                                            <nz-select formControlName="monthOfYear" nzAllowClear removeOptionTitle
+                                                [nzDisabled]="radioValue !== SELECT_OPTIONS.FIRST_OPTION">
+                                                <nz-option *ngFor="let service of monthOfYears"
+                                                    [nzLabel]="service.label | translate" [nzValue]="service.value"
+                                                    [nzCustomContent]="true">
+                                                    <div container="body" [animation]="false" [openDelay]="100"
+                                                        [closeDelay]="0" [ngbTooltip]="(service?.label!) | translate">
+                                                        {{(service?.label!) |
+                                                        translate}}
+                                                    </div>
+                                                </nz-option>
+                                            </nz-select>
+                                        </div>
+                                    </ng-container>
+                                    <div class="col-1 mb-2">
+                                        <input type="number" [min]="minDay" [max]="maxDay" formControlName="dayOfMonth"
+                                            nz-input appNumbersOnly class="form-control"
+                                            [readOnly]="radioValue !== SELECT_OPTIONS.FIRST_OPTION">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-2 mt-2">
+                                        <label class="float-end" nz-radio nzValue="SECOND_OPTION">{{
+                                            getTranslate('on-the')
+                                            }}</label>
+                                    </div>
+                                    <div class="col-2 mb-2">
+                                        <nz-select formControlName="weekOfMonth" nzAllowClear removeOptionTitle
+                                            [nzDisabled]="radioValue !== SELECT_OPTIONS.SECOND_OPTION">
+                                            <nz-option *ngFor="let service of weekOfMonths"
+                                                [nzLabel]="service.label | translate" [nzValue]="service.value"
+                                                [nzCustomContent]="true">
+                                                <div container="body" [animation]="false" [openDelay]="100"
+                                                    [closeDelay]="0" [ngbTooltip]="(service?.label!) | translate">
+                                                    {{(service?.label!) |
+                                                    translate}}
+                                                </div>
+                                            </nz-option>
+                                        </nz-select>
+                                    </div>
+                                    <div class="col-2 mb-2">
+                                        <nz-select formControlName="dayOfWeek" nzAllowClear removeOptionTitle
+                                            [nzDisabled]="radioValue !== SELECT_OPTIONS.SECOND_OPTION">
+                                            <nz-option *ngFor="let service of dayOfWeeks"
+                                                [nzLabel]="service.label | translate" [nzValue]="service.value"
+                                                [nzCustomContent]="true">
+                                                <div container="body" [animation]="false" [openDelay]="100"
+                                                    [closeDelay]="0" [ngbTooltip]="(service?.label!) | translate">
+                                                    {{(service?.label!) |
+                                                    translate}}
+                                                </div>
+                                            </nz-option>
+                                        </nz-select>
+                                    </div>
+                                    <ng-container *ngIf="repeatType == REPEAT_TYPES.YEARLY_REPEAT">
+                                        <div class="col-2 mb-2">
+                                            <nz-select formControlName="monthOfYear" nzAllowClear removeOptionTitle
+                                                [nzDisabled]="radioValue !== SELECT_OPTIONS.SECOND_OPTION">
+                                                <nz-option *ngFor="let service of monthOfYears"
+                                                    [nzLabel]="service.label | translate" [nzValue]="service.value"
+                                                    [nzCustomContent]="true">
+                                                    <div container="body" [animation]="false" [openDelay]="100"
+                                                        [closeDelay]="0" [ngbTooltip]="(service?.label!) | translate">
+                                                        {{(service?.label!) |
+                                                        translate}}
+                                                    </div>
+                                                </nz-option>
+                                            </nz-select>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </nz-radio-group>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="repeatType != REPEAT_TYPES.NOT_REPEAT">
+                        <div class="row">
+                            <div class="col-2 mt-2">
+                                <label class="float-end">{{ getTranslate('endDate') }} <span
+                                        class="text-danger">*</span></label>
+                            </div>
+                            <div class="col-3 mb-2">
+                                <div class="date-picker">
+                                    <nz-date-picker formControlName="endDate" [nzId]="'endDatePicker'"
+                                        (keyup.enter)="enterDatePicker($event, 'endDate')"
+                                        [nzDisabledDate]="disabledBeforeStartAt" [nzFormat]="'dd/MM/yyyy'"
+                                        #endDatePicker [nzDefaultPickerValue]="startDate" nzPlaceHolder="DD/MM/YYYY">
+                                    </nz-date-picker>
+                                </div>
+                                <ng-container *ngIf="form.get('endDate')?.touched || form.get('endDate')?.dirty">
+                                    <span class="text-danger" *ngIf="form.get('endDate')?.hasError('required')">
+                                        <mb-not-blank [value]="getTranslate('endDate')"></mb-not-blank>
+                                    </span>
+                                    <span class="text-danger" *ngIf="form.get('endDate')?.hasError('pattern')">
+                                        <small>{{ 'common.pattern' | translate }}</small>
+                                    </span>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <div class="row mt-2">
+                        <div class="col-2 mb-2">
+                            <label>{{ getTranslate('meetingType') }} <span class="text-danger">*</span></label>
+                            <br>
+                            <nz-select formControlName="meetingType" nzAllowClear removeOptionTitle
+                                (ngModelChange)="changeMeetingType($event)">
+                                <nz-option *ngFor="let service of meetingTypes" [nzLabel]="service.label | translate"
+                                    [nzValue]="service.value" [nzCustomContent]="true">
+                                    <div container="body" [animation]="false" [openDelay]="100" [closeDelay]="0"
+                                        [ngbTooltip]="(service?.label!) | translate">{{(service?.label!) | translate}}
+                                    </div>
+                                </nz-option>
+                            </nz-select>
+                            <ng-container *ngIf="form.get('meetingType')?.touched || form.get('meetingType')?.dirty">
+                                <span class="text-danger" *ngIf="form.get('meetingType')?.hasError('required')">
+                                    <mb-not-blank [value]="getTranslate('meetingType')"></mb-not-blank>
+                                </span>
+                            </ng-container>
+                        </div>
+                    </div>
+                    <ng-container *ngIf="meetingType === MEETING_TYPES.ONLINE">
+                        <div class="row mt-2">
+                            <div class="col-12 mb-2">
+                                <label>{{ getTranslate('link') }} <span class="text-danger">*</span></label>
+                                <input formControlName="link" nz-input
+                                    [maxLength]="LENGTH_VALIDATOR.CONTENT_MAX_LENGTH.MAX" class="form-control"
+                                    placeholder="{{ getTranslate('link') }}">
+                                <ng-container *ngIf="form.get('link')?.touched || form.get('link')?.dirty">
+                                    <span class="text-danger" *ngIf="form.get('link')?.hasError('required')">
+                                        <mb-not-blank [value]="getTranslate('link')"></mb-not-blank>
+                                    </span>
+                                    <span class="text-danger" *ngIf="form.get('link')?.hasError('pattern')">
+                                        <small>{{ 'common.pattern' | translate }}</small>
+                                    </span>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="meetingType === MEETING_TYPES.OFFLINE">
+                        <div class="row mt-2">
+                            <div class="col-12 mb-2">
+                                <label>{{ getTranslate('meetingRoom') }} <span class="text-danger">*</span></label>
+                                <br>
+                                <nz-select formControlName="roomId" nzAllowClear removeOptionTitle nzShowSearch
+                                    appDebounceKeyUp (onEvent)="searchRooms($event, true)" nzServerSearch>
+                                    <nz-option *ngFor="let room of rooms" [nzLabel]="room.location" [nzValue]="room.id"
+                                        [nzCustomContent]="true">
+                                        <div container="body" [animation]="false" [openDelay]="100" [closeDelay]="0"
+                                            [ngbTooltip]="room.location">{{room.code}} - {{room.location}}</div>
+                                    </nz-option>
+                                </nz-select>
+                                <ng-container *ngIf="form.get('roomId')?.touched || form.get('roomId')?.dirty">
+                                    <span class="text-danger" *ngIf="form.get('roomId')?.hasError('required')">
+                                        <mb-not-blank [value]="getTranslate('meetingRoom')"></mb-not-blank>
+                                    </span>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <div class="row mt-2">
+                        <div class="col-12 mb-2">
+                            <label>{{ getTranslate('description') }}</label>
+                            <mb-editor [placeholder]="getTranslate('type-description')" [isReadOnly]="isDetail"
+                                [value]="form?.get('description')?.value || ''"
+                                (data)="onChangeData('description', $event)">
+                            </mb-editor>
+                            <ng-container *ngIf="form.get('description')?.touched || form.get('description')?.dirty">
+                                <span class="text-danger" *ngIf="form.get('description')?.hasError('pattern')">
+                                    <small>{{ 'common.pattern' | translate }}</small>
+                                </span>
+                            </ng-container>
+                        </div>
+                    </div>
+                </section>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <ng-container *ngIf="isDetail && meeting.approveStatus === APPROVE_STATUSS.UNCONFIRMED">
+                <button class="me-2" nz-button nzType="default" (click)="onReject()">
+                    {{ 'action.reject' | translate }}
+                </button>
+                <button nz-button nzType="primary" (click)="onApprove()" class="ms-2">
+                    {{ 'action.approve' | translate }}
+                </button>
+            </ng-container>
+            <ng-container *ngIf="!isDetail">
+                <button class="me-2" nz-button nzType="default" (click)="onCancel()">
+                    {{ 'action.cancel' | translate }}
+                </button>
+                <button nz-button nzType="primary" (click)="onSubmit()" class="ms-2" [disabled]="form.invalid">
+                    {{ (isUpdate ? 'action.update' : 'action.create') | translate }}
+                </button>
+            </ng-container>
+        </div>
+    </div>
+</section>

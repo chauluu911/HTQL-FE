@@ -1,0 +1,131 @@
+<div class="content">
+  <div *nzModalTitle>
+    <span>{{
+      (isUpdate ? "action.update" : "action.create") | translate
+    }}</span>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <form [formGroup]="form">
+        <div class="row">
+          <div class="col-12 mb-2">
+            <label
+              >{{ "model.department.code" | translate
+              }}<span class="text-danger">*</span></label
+            >
+            <input
+              formControlName="code"
+              nz-input
+              [disabled]="isUpdate"
+              [maxLength]="LENGTH_VALIDATOR.NAME_MAX_LENGTH.MAX"
+              placeholder="{{ 'model.department.code' | translate }}"
+            />
+            <ng-container
+              *ngIf="form.get('code')?.touched || form.get('code')?.dirty"
+            >
+              <span
+                class="text-danger"
+                *ngIf="form.get('code')?.hasError('required')"
+              >
+                <mb-not-blank [value]="'model.department.code'"></mb-not-blank>
+              </span>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-12 mb-2">
+                <label
+                  >{{ "model.department.name" | translate }}
+                  <span class="text-danger">*</span></label
+                >
+                <input
+                  formControlName="name"
+                  nz-input
+                  [maxLength]="LENGTH_VALIDATOR.CODE_MAX_LENGTH.MAX"
+                  placeholder="{{
+                    'model.department.enterDepartmentName' | translate
+                  }}"
+                />
+                <ng-container
+                  *ngIf="form.get('name')?.touched || form.get('name')?.dirty"
+                >
+                  <span
+                    class="text-danger"
+                    *ngIf="form.get('name')?.hasError('required')"
+                  >
+                    <mb-not-blank
+                      [value]="'model.department.name'"
+                    ></mb-not-blank>
+                  </span>
+                </ng-container>
+              </div>
+            </div>
+
+            <div class="col-12 mb-2">
+              <label>{{ "model.department.childDepartment" | translate }}
+                <span class="text-danger">*</span></label>
+              <nz-tree-select
+                formControlName="parentId"
+                style="width: 100%"
+                nzPlaceHolder="{{
+                  'model.department.enterDepartmentParentId' | translate
+                }}"
+                [nzDropdownMatchSelectWidth]="true"
+                [nzDropdownStyle]="{ 'max-height': '300px' }"
+                [nzNodes]="listDepartments"
+                (nzExpandChange)="onExpandChange($event)"
+              ></nz-tree-select>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="mb-2">
+              <label>{{ "model.department.description" | translate }}</label>
+              <textarea
+                rows="4"
+                placeholder="{{
+                  'model.department.enterDepartmentDes' | translate
+                }}"
+                formControlName="description"
+                nz-input
+              >
+              </textarea>
+              <ng-container
+                *ngIf="
+                  form.get('description')?.touched ||
+                  form.get('description')?.dirty
+                "
+              >
+                <span
+                  class="text-danger"
+                  *ngIf="form.get('description')?.hasError('required')"
+                >
+                  <small>{{ "common.required" }}</small>
+                </span>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12 text-center" *nzModalFooter>
+    <button nz-button nzType="default" class="e-2" (click)="onCancel()">
+      {{ "action.cancel" | translate }}
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      [disabled]="form.invalid"
+      (click)="onSubmit()"
+    >
+      {{ (isUpdate ? "action.save" : "action.save") | translate }}
+    </button>
+  </div>
+</div>

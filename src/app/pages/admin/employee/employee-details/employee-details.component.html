@@ -1,0 +1,228 @@
+<div class="title mb-3">
+  <mb-table-title [showBack]="true" [title]="'action.detail'"></mb-table-title>
+</div>
+<div class="row">
+  <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 mt-4">
+    <nz-tabset [nzSelectedIndex]="tabIndex" (nzSelectedIndexChange)="onChangeTab($event)">
+      <nz-tab [nzTitle]="'' | translate">
+        <ng-container [ngTemplateOutlet]="avatar" [ngTemplateOutletContext]="{}">
+        </ng-container>
+      </nz-tab>
+    </nz-tabset>
+    <ng-template #avatar>
+      <section class="section-custom">
+        <div class="col-lg-12">
+          <app-upload-image [customSizeImg]="false" [displayButton]="false" [imageUrl]="imageUrl"
+            [alternateImageUrl]="avatarPlaceHolder" className="image" nzTooltipPlacement="top" nz-tooltip>
+          </app-upload-image>
+        </div>
+      </section>
+    </ng-template>
+  </div>
+  <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+    <nz-tabset [nzSelectedIndex]="tabIndex" (nzSelectedIndexChange)="onChangeTab($event)">
+      <nz-tab [nzTitle]="'common.general-info' | translate">
+        <ng-container [ngTemplateOutlet]="informationEmployee" [ngTemplateOutletContext]="{}">
+        </ng-container>
+      </nz-tab>
+      <nz-tab [nzTitle]="'common.work-timeline' | translate">
+        <ng-container [ngTemplateOutlet]="informationRent" [ngTemplateOutletContext]="{}">
+        </ng-container>
+      </nz-tab>
+    </nz-tabset>
+    <ng-template #informationEmployee>
+      <section class="content section-custom">
+        <div class="row mb-3">
+          <div class="general-p hr col-8 info_wrapper_field">
+            <div>
+              <div class="row mb-1">
+                <div class="col-lg-5 info_wrapper_field_label">
+                  <label>{{ "model.employee.fullName" | translate }}</label>
+                </div>
+                <div class="col-lg-7 info_wrapper_field_label">
+                  <span>
+                    <p>{{ employee.fullName ? employee.fullName : ('common.noInfo' | translate) }}</p>
+                  </span>
+                </div>
+                <hr>
+              </div>
+              <div class="row mb-1 mt-3">
+                <div class="col-lg-5 info_wrapper_field_label">
+                  <label>{{ "model.employee.dayOfBirth" | translate }}</label>
+                </div>
+                <div class="col-lg-7 info_wrapper_field_label">
+                  <span>
+                    <p>{{ employee.dayOfBirth ? (employee.dayOfBirth | date: 'dd/MM/yyyy') : ('common.noInfo' |
+                      translate) }}</p>
+                  </span>
+                </div>
+                <hr>
+              </div>
+              <div class="row mb-1 mt-3">
+                <div class="col-lg-5 info_wrapper_field_label">
+                  <label>{{ "model.employee.phoneNumber" | translate }}</label>
+                </div>
+                <div class="col-lg-7 info_wrapper_field_label">
+                  <span>
+                    <p>{{ employee.phoneNumber ? employee.phoneNumber : ('common.noInfo' | translate) }}</p>
+                  </span>
+                </div>
+                <hr>
+              </div>
+              <div class="row mb-1 mt-3">
+                <div class="col-lg-5 info_wrapper_field_label">
+                  <label>{{ "model.employee.email" | translate }}</label>
+                </div>
+                <div class="col-lg-7 info_wrapper_field_label">
+                  <span>
+                    <p>{{ employee.email ? employee.email : ('common.noInfo' | translate) }}</p>
+                  </span>
+                </div>
+                <hr>
+              </div>
+              <div class="row mb-1 mt-3">
+                <div class="col-lg-5 info_wrapper_field_label">
+                  <label>{{ "model.employee.employeeCode" | translate }}</label>
+                </div>
+                <div class="col-lg-7 info_wrapper_field_label">
+                  <span>
+                    <p>{{ employee.employeeCode ? employee.employeeCode : ('common.noInfo' | translate) }}</p>
+                  </span>
+                </div>
+                <hr>
+              </div>
+              <div class="row mb-1 mt-3">
+                <div class="col-lg-5 info_wrapper_field_label">
+                  <label>{{ "model.employee.departmentName" | translate }}</label>
+                </div>
+                <div class="col-lg-7 info_wrapper_field_label">
+                  <span>
+                    <p>{{ employee.departmentName ? employee.departmentName : ('common.noInfo' | translate) }}</p>
+                  </span>
+                </div>
+                <hr>
+              </div>
+            </div>
+          </div>
+          <div class="col-4 info_wrapper_field">
+            <div style="margin-top: 8px" class="row text-center info_wrapper_field">
+              <qrcode class="{{ !!vCardData ? 'mt-2' : 'qr-no-content' }}" #complaintQrCode
+                [qrdata]="vCardData || 'No content'" [width]="220" [margin]="0" [errorCorrectionLevel]="'M'">
+              </qrcode>
+            </div>
+            <div class="row text-center">
+            </div>
+          </div>
+          <div class="general-p row mt-2 info_wrapper_field">
+            <div style="padding-left: 6px;" class="col-12">
+              <div class="row">
+                <div style="padding-left: 16px" class="col-lg-3 info_wrapper_field_label">
+                  <label>{{ "model.employee.description" | translate }}</label>
+                </div>
+                <div style="padding-left: 5%;" class="col-lg-9 info_wrapper_field_content">
+                  <span>
+                    {{ employee.description ? employee.description : ('common.noInfo' | translate) }}
+                  </span>
+                </div>
+              </div>
+              <hr id="hr-description">
+            </div>
+          </div>
+        </div>
+        <!-- </div> -->
+      </section>
+    </ng-template>
+    <!--history work infomation -->
+    <ng-template #informationRent>
+      <section class="content section-custom">
+        <div class="info_wrapper job_current">
+          <div class="info_wrapper_title">
+            {{'model.employee.jobCurrent' | translate}}
+          </div>
+          <div class="info_wrapper_content  p-2">
+            <div class="row info_wrapper_field">
+              <div class="col-lg-4 info_wrapper_field_label">
+                <label>{{ "model.employee.position" | translate }}</label>
+              </div>
+              <div class="col-lg-8 info_wrapper_field_content">
+                <span *ngIf="employee.jobTitle; else noInfo" >
+                  <p>{{ getLabelTitle(employee.jobTitle) | translate }}</p>
+                </span>
+                <ng-template #noInfo>
+                  <p>{{ 'common.noInfo' | translate}}</p>
+                </ng-template>
+              </div>
+              <hr>
+            </div>
+            <div class="row info_wrapper_field">
+              <div class="col-lg-4 info_wrapper_field_label">
+                <label>{{ "model.employee.departmentName" | translate }}</label>
+              </div>
+              <div class="col-lg-8 info_wrapper_field_content">
+                <span>
+                  <p>{{ employee.departmentName ? employee.departmentName : ('common.noInfo' | translate) }}</p>
+                </span>
+              </div>
+              <hr>
+            </div>
+          </div>
+        </div>
+        <div class="info_wrapper job_history">
+          <div class="info_wrapper_title">
+            {{'model.employee.workHistory' | translate}}
+          </div>
+          <div class="info_wrapper_content">
+            <nz-table
+              #table
+              [nzData]="employee.employmentHistories"
+              [nzTableLayout]="'auto'"
+            >
+            <thead>
+              <tr>
+                <th nzAlign="center">{{ "model.employee.employmentHistory.id" | translate }}</th>
+                <th nzAlign="left"  >
+                  {{ "model.employee.employmentHistory.departmentName" | translate }}
+                </th>
+                <th nzAlign="left" >
+                  {{ "model.employee.employmentHistory.title" | translate }}
+                </th>
+                <th nzAlign="left">
+                  {{ "model.employee.employmentHistory.startDate" | translate }}
+                </th>
+                <th nzAlign="left">
+                  {{ "model.employee.employmentHistory.endDate" | translate }}
+                </th>
+                <th nzAlign="center">
+                  {{ "model.employee.employmentHistory.status" | translate }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let employmentHistory of employee.employmentHistories; let i = index">
+                <tr>
+                  <td nzAlign="center">{{ i }}</td>
+                  <td nzAlign="left">{{ employmentHistory?.departmentName }}</td>
+                  <td nzAlign="left">{{ employmentHistory?.title }}</td>
+                  <td nzAlign="center">
+                    {{ employmentHistory.startDate | date: "dd/MM/yyyy" }}
+                  </td>
+                  <td nzAlign="left">
+                    {{ employmentHistory.endDate | date: "dd/MM/yyyy" }}
+                  </td>
+                  <td nzAlign="left">
+                    <mb-badge
+                    [color]=" employmentHistory.status === STATUS_ACTIVE ? 'badge-info':'badge-secondary'"
+                    [text]="format(employmentHistory.status, 'status')"
+                  >
+                  </mb-badge>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </nz-table>
+          </div>
+        </div>
+      </section>
+    </ng-template>
+  </div>
+</div>

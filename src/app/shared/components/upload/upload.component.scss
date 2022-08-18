@@ -1,0 +1,22 @@
+.import_result_file{
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+}
+.import_result_file_icon{
+    color: rgb(118, 234, 118);
+
+}
+.import_result_file_name{
+    padding: 0px 10px;
+    text-decoration: underline;
+
+}
+.import_result_file_download{
+    cursor: pointer;
+    transition: all 0.4s ;
+}
+.import_result_file_download:hover{
+    color: aqua;
+    transform: scale(1.1);
+}
